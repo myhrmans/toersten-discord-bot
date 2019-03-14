@@ -102,9 +102,9 @@ async def nickname(ctx, member:discord.User = None):
     name = resp.text.split("class=global-top-avatar /> ")
     name = name[1].split("<span id=badgeTotal")
     name = name[0]
-    print(name)
+    print(name[0])
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer ditt namn:")
     #for l in name:
-    await member.send("temp")
+    await member.send(f"Hej {name}.")
 
 bot.run("NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30")
