@@ -7,13 +7,13 @@ Toersten daily task is to drink beer and handle the people in Ödets discord
 - Check version
 - React on certian comments
 - Get course information from Blackboard
+- Bug report with notification to admins
 
 ## Todo
 - Create channels for each course
 - Automatically set user privileges according to their course attendance on Blackboard
 - Create Youtube-playlist with Nolle-listan
-- Add avatar image to Toersten
-- Add bug report with notification to admins
+ 
 
 ## Commands
 | Command | Description |
@@ -21,6 +21,7 @@ Toersten daily task is to drink beer and handle the people in Ödets discord
 | 7: ping | Check latency |
 | 7: version | Check bot version |
 | 7: courses | Returns course attendance from Blackboard |
+| 7: report | To report a bug or issue to admins |
 
 ## Contributers
 - [Martin Myhrman](https://github.com/myhrmans/)
