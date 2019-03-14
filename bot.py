@@ -98,13 +98,11 @@ async def nickname(ctx, member:discord.User = None):
     browser["user_id"] = username.content
     browser["password"] = password.content
     resp = browser.submit_selected()
-    resp2 = browser.post("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction", params='action=refreshAjaxModule&modId=_25_1&tabId=_1_1&tab_tab_group_id=_1_1');
-    courses = resp2.text
-    courses = lxml.html.fromstring(courses)
-    courses = courses.cssselect("a[id='global-nav-link']")
+    name = resp.text
+    name = lxml.html.fromstring(courses)
+    name = courses.cssselect("a[id='global-nav-link']")
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer ditt namn:")
-    for l in courses:
-        await member.send(f"{l.text}")
+    await member.send(f"{name}")
 
 
 
