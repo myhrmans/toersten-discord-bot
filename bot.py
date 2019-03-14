@@ -106,5 +106,6 @@ async def nickname(ctx, member:discord.User = None):
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer ditt namn:")
     #for l in name:
     await member.send(f"Hej {name}.")
-
+    await member.change_nickname(ctx.message.author, name)
+    
 bot.run("NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30")
