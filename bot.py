@@ -100,7 +100,7 @@ async def nickname(ctx, member:discord.User = None):
     resp = browser.submit_selected()
     channel = bot.get_channel(555823680148602901)
     name = resp.text.split("class=global-top-avatar /> ")
-    name = name[1].split("class=global-top-avatar /> ")
+    name = name[1].split("<span id=badgeTotal")
     name = name[0]
     print(name)
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer ditt namn:")
