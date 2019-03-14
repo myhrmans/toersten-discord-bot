@@ -28,9 +28,9 @@ async def on_reaction_add(reaction, user):
         ':beers:': f"{user.mention} bjuder alla på en backbro, SKÅL!",
         ':beer:' : f"{user.mention} bjuder alla på en tvåbro, SKÅL!"
     }
-
+    print(reaction.str)
     channel = reaction.message.channel
-    if str(reaction.emoji) in reactionResponses.keys():
+    if str(reaction.str) in reactionResponses.keys():
         await channel.send(reactionResponses[reaction.emoji])
     #do stuff
 
