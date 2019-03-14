@@ -30,17 +30,12 @@ async def on_reaction_add(reaction, user):
     }
 
     channel = reaction.message.channel
-    await channel.send(str(reaction.emoji) + " str")
-    await channel.send(int(reaction.emoji) + " int")
-    await channel.send(hash(reaction.emoji)+" hash")
     if str(reaction.emoji) in reactionResponses.keys():
-        await channel.send(reactionResponses[reaction.emoji] + "STRING")
-    if int(reaction.emoji) in reactionResponses.keys():
-        await channel.send(reactionResponses[reaction.emoji] + "STRING")
+        await channel.send(reactionResponses[reaction.emoji])
     #do stuff
 
 @bot.command()
-async def kurser(ctx, member:discord.User = None):
+async def courses(ctx, member:discord.User = None):
     member = ctx.message.author
     message = ctx.message
     def pred(m):
