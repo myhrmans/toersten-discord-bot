@@ -13,7 +13,6 @@ Toersten daily task is to drink beer and handle the people in Ödets discord
 - Create channels for each course
 - Automatically set user privileges according to their course attendance on Blackboard
 - Create Youtube-playlist with Nolle-listan
- 
 
 ## Commands
 | Command | Description |
