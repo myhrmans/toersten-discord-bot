@@ -18,7 +18,7 @@ async def ping(ctx):
     ping = round(ping_ * 1000)
     await ctx.channel.send(f"Det tog {ping}ms för mig att dricka upp en öl och svara på detta meddelande, SKÅL")
 @bot.command()
-async def version(ctx):
+async def version(ctx, version):
     await ctx.channel.send("Nuvarande version: {}".format(version))
 
 @bot.event
