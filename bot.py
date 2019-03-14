@@ -16,8 +16,8 @@ async def on_ready():
 @bot.command()
 async def ping(ctx):
     ping_ = bot.latency
-    ping = round(ping_ * 100)
-    await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL as we say in swedish!")
+    ping = round(ping_ * 1000)
+    await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL... as we say in swedish!")
 @bot.command()
 async def version(ctx):
     await ctx.channel.send("Current Version: {}".format(bot_version))
@@ -25,10 +25,9 @@ async def version(ctx):
 @bot.event
 async def on_reaction_add(reaction, user):
     reactionResponses = {
-        ':beers:': f"{user.mention} bjuder alla på en backbro, SKÅL!",
-        ':beer:' : f"{user.mention} bjuder alla på en tvåbro, SKÅL!"
+        '🍻': f"{user.mention} bjuder alla på en backbro, SKÅL!",
+        '🍺' : f"{user.mention} bjuder alla på en tvåbro, SKÅL!"
     }
-
     channel = reaction.message.channel
     if str(reaction.emoji) in reactionResponses.keys():
         await channel.send(reactionResponses[reaction.emoji])
