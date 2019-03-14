@@ -17,7 +17,7 @@ async def on_ready():
 async def ping(ctx):
     ping_ = bot.latency
     ping = round(ping_ * 1000)
-    await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL..a! as we say in swedish!")
+    await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL...a! as we say in swedish!")
 @bot.command()
 async def version(ctx):
     await ctx.channel.send("Current Version: {}".format(bot_version))
