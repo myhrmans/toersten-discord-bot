@@ -19,6 +19,18 @@ async def ping(ctx):
     await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL... as we say in swedish!")
 
 @bot.command()
+async def report(ctx, member:discord.User = Noner):
+    member = ctx.message.author
+    message = ctx.message
+    def pred(m):
+        return m.author == message.author
+    await member.create_dm()
+    await member.send(f"Beskriv ditt problem:")
+    message = await bot.wait_for('message', check=pred)
+    await bot.send(bot.getChannel("555823680148602901"), f"A new bug was reported by {member.mention}")
+    await bot.send(bot.getChannel("555823680148602901"), f"Description: {message}")
+    
+@bot.command()
 async def version(ctx):
     await ctx.channel.send("Current Version: {}".format(bot_version))
 
