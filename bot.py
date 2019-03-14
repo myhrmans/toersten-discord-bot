@@ -104,7 +104,7 @@ async def register(ctx, member:discord.User = None):
     for l in courses:
         courseID = l.text.split("HP")
         courseID = courseID[1:7]
-        await member.send(f"courseID")
+        await member.send(f"{courseID}")
 
 @bot.command()
 async def nickname(ctx, member:discord.User = None):
