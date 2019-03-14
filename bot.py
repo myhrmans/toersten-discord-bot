@@ -16,7 +16,7 @@ async def on_ready():
 async def ping(ctx):
     ping_ = bot.latency
     ping = round(ping_ * 1000)
-    await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL... as we say in swedish!")
+    await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL as we say in swedish!")
 
 @bot.command()
 async def report(ctx, member:discord.User = None):
@@ -75,6 +75,37 @@ async def courses(ctx, member:discord.User = None):
     for l in courses:
         await member.send(f"{l.text}")
 
+@bot.command()
+async def register(ctx, member:discord.User = None):
+    member = ctx.message.author
+    message = ctx.message
+    def pred(m):
+        return m.author == message.author
+    await member.create_dm()
+    await member.send(f"Ange ditt Blackboard användarnamn (exempel marmyh16):")
+    username = await bot.wait_for('message', check=pred)
+    await member.send(f"Okej {username.content}. Bara ett steg kvar.. ditt lösenord:")
+    password = await bot.wait_for('message', check=pred)
+    #await member.send(f"{username.content} och {password.content}")
+    browser = mechanicalsoup.browser = mechanicalsoup.StatefulBrowser(
+        soup_config={'features': 'lxml'},
+        raise_on_404=True
+    )
+    login_page = browser.open("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_98_1")
+    login_form = browser.select_form('#loginBoxFull form')
+    browser["user_id"] = username.content
+    browser["password"] = password.content
+    resp = browser.submit_selected()
+    resp2 = browser.post("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction", params='action=refreshAjaxModule&modId=_25_1&tabId=_1_1&tab_tab_group_id=_1_1');
+    courses = resp2.text
+    courses = lxml.html.fromstring(courses)
+    courses = courses.cssselect("a")
+    await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
+    for l in courses:
+        courseID = l.text.split("HP")
+        courseID = courseID[1]
+        courseID = courseID[1:7]
+        await member.send(f"{courseID}")
 
 @bot.command()
 async def nickname(ctx, member:discord.User = None):
@@ -99,12 +130,13 @@ async def nickname(ctx, member:discord.User = None):
     browser["password"] = password.content
     resp = browser.submit_selected()
     channel = bot.get_channel(555823680148602901)
-    print(resp.text)
-    name = resp.text
-    name = lxml.html.fromstring(name)
-    name = name.cssselect("a[class='nav-link u_floatThis-right']")[0].text
+    name = resp.text.split("class=global-top-avatar /> ")
+    name = name[1].split("<span id=badgeTotal")
+    name = name[0]
+    print(name[0])
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer ditt namn:")
     #for l in name:
-    await member.send(f"{name}")
-
+    await member.send(f"Hej {name}.")
+    await member.edit(nick=name)
+    
 bot.run("NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30")
