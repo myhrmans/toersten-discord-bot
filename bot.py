@@ -19,7 +19,7 @@ async def ping(ctx):
     await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL... as we say in swedish!")
 
 @bot.command()
-async def report(ctx, member:discord.User = Noner):
+async def report(ctx, member:discord.User = None):
     member = ctx.message.author
     message = ctx.message
     def pred(m):
