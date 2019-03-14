@@ -27,8 +27,9 @@ async def report(ctx, member:discord.User = None):
     await member.create_dm()
     await member.send(f"Beskriv ditt problem:")
     message = await bot.wait_for('message', check=pred)
-    await bot.send(bot.getChannel("555823680148602901"), f"A new bug was reported by {member.mention}")
-    await bot.send(bot.getChannel("555823680148602901"), f"Description: {message}")
+    channel = bot.getChannel(555823680148602901)
+    await channel.send(f"A new bug was reported by {member.mention}")
+    await channel.send(f"Description: {message}")
     
 @bot.command()
 async def version(ctx):
