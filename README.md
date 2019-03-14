@@ -8,6 +8,7 @@ Toersten daily task is to drink beer and handle the people in Ödets discord
 - React on certian comments
 - Get course information from Blackboard
 - Bug report with notification to admins
+- Get courseIDs from blackboard
 
 ## Todo
 - Create channels for each course
@@ -21,6 +22,7 @@ Toersten daily task is to drink beer and handle the people in Ödets discord
 | 7: version | Check bot version |
 | 7: courses | Returns course attendance from Blackboard |
 | 7: report | To report a bug or issue to admins |
+| 7: register | To get courseID from Blackboard |
 
 ## Contributers
 - [Martin Myhrman](https://github.com/myhrmans/)
