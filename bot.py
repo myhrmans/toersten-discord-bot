@@ -5,7 +5,7 @@ import lxml.html
 bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
 bot.remove_command("help")
 client = discord.Client()
-version=1.00
+version= "1.00"
 @bot.event
 async def on_ready():
     print("Ready to go!")
