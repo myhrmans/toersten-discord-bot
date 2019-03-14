@@ -1,2 +1,2 @@
 # toersten-discord-bot
-Toersten som dagligen hinkar bärs och hanterar Ödets discord
+Toersten daily task is to drink beer and handle the people in Ödets discord
