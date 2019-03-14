@@ -17,6 +17,14 @@ async def ping(ctx):
     ping_ = bot.latency
     ping = round(ping_ * 1000)
     await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL... as we say in swedish!")
+
+@bot.command()
+async def report(ctx, user):
+    await member.send(f"Beskriv ditt problem:")
+    message = await bot.wait_for('message', check=pred)
+    await bot.send(bot.getChannel("555823680148602901"), f"A new bug was reported by {user.mention}")
+    await bot.send(bot.getChannel("555823680148602901"), f"Description: {message}")
+    
 @bot.command()
 async def version(ctx):
     await ctx.channel.send("Current Version: {}".format(bot_version))
