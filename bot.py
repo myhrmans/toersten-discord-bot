@@ -75,6 +75,36 @@ async def courses(ctx, member:discord.User = None):
     for l in courses:
         await member.send(f"{l.text}")
 
+@bot.command()
+async def register(ctx, member:discord.User = None):
+    member = ctx.message.author
+    message = ctx.message
+    def pred(m):
+        return m.author == message.author
+    await member.create_dm()
+    await member.send(f"Ange ditt Blackboard användarnamn (exempel marmyh16):")
+    username = await bot.wait_for('message', check=pred)
+    await member.send(f"Okej {username.content}. Bara ett steg kvar.. ditt lösenord:")
+    password = await bot.wait_for('message', check=pred)
+    #await member.send(f"{username.content} och {password.content}")
+    browser = mechanicalsoup.browser = mechanicalsoup.StatefulBrowser(
+        soup_config={'features': 'lxml'},
+        raise_on_404=True
+    )
+    login_page = browser.open("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_98_1")
+    login_form = browser.select_form('#loginBoxFull form')
+    browser["user_id"] = username.content
+    browser["password"] = password.content
+    resp = browser.submit_selected()
+    resp2 = browser.post("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction", params='action=refreshAjaxModule&modId=_25_1&tabId=_1_1&tab_tab_group_id=_1_1');
+    courses = resp2.text
+    courses = lxml.html.fromstring(courses)
+    courses = courses.cssselect("a")
+    await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
+    for l in courses:
+        courseID = l.text.split("HP")
+        courseID = courseID[1:7]
+        await member.send(f"courseID")
 
 @bot.command()
 async def nickname(ctx, member:discord.User = None):
