@@ -5,6 +5,7 @@ import lxml.html
 bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
 bot.remove_command("help")
 client = discord.Client()
+
 @bot.event
 async def on_ready():
     print("Ready to go!")
@@ -19,10 +20,21 @@ async def ping(ctx):
 
 @bot.event
 async def on_reaction_add(reaction, user):
+    reactionResponses = {
+        ':beers:': f"{user.mention} bjuder alla på en backbro, SKÅL!",
+        ':beer:' : f"{user.mention} bjuder alla på en tvåbro, SKÅL!"
+    }
+
     channel = reaction.message.channel
-    if reaction.emoji == '🍻':
-        await channel.send(f"{user.mention} bjuder alla på en backbro, SKÅL!")
+    await channel.send(str(reaction.emoji) + " str")
+    await channel.send(int(reaction.emoji) + " int")
+    await channel.send(hash(reaction.emoji)+" hash")
+    if str(reaction.emoji) in reactionResponses.keys():
+        await channel.send(reactionResponses[reaction.emoji] + "STRING")
+    if int(reaction.emoji) in reactionResponses.keys():
+        await channel.send(reactionResponses[reaction.emoji] + "STRING")
     #do stuff
+
 @bot.command()
 async def kurser(ctx, member:discord.User = None):
     member = ctx.message.author
