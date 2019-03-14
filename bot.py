@@ -100,9 +100,9 @@ async def nickname(ctx, member:discord.User = None):
     resp = browser.submit_selected()
     channel = bot.get_channel(555823680148602901)
     print(resp.text)
-    name = resp.text
-    name = lxml.html.fromstring(name)
-    name = name.cssselect("a[class='nav-link u_floatThis-right']")[0].text
+    name = resp.text.split("class=global-top-avatar /> ")
+    name = name[1].split("class=global-top-avatar /> ")
+    name = name[0]
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer ditt namn:")
     #for l in name:
     await member.send(f"{name}")
