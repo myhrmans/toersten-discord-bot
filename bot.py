@@ -103,6 +103,7 @@ async def register(ctx, member:discord.User = None):
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
     for l in courses:
         courseID = l.text.split("HP")
+        courseID = courseID[1]
         courseID = courseID[1:7]
         await member.send(f"{courseID}")
 
