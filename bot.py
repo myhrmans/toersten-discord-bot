@@ -31,7 +31,7 @@ async def on_reaction_add(reaction, user):
     #do stuff
 
 @bot.command()
-async def kurser(ctx, member:discord.User = None):
+async def courses(ctx, member:discord.User = None):
     member = ctx.message.author
     message = ctx.message
     def pred(m):
