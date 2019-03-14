@@ -5,7 +5,7 @@ import lxml.html
 bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
 bot.remove_command("help")
 client = discord.Client()
-
+version=1.00
 @bot.event
 async def on_ready():
     print("Ready to go!")
@@ -17,6 +17,9 @@ async def ping(ctx):
     ping_ = bot.latency
     ping = round(ping_ * 1000)
     await ctx.channel.send(f"Det tog {ping}ms för mig att dricka upp en öl och svara på detta meddelande, SKÅL")
+@bot.command()
+async def version(ctx):
+    await ctx.channel.send(f"Nuvarande version: {version}")
 
 @bot.event
 async def on_reaction_add(reaction, user):
