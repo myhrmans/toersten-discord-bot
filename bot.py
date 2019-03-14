@@ -21,6 +21,11 @@ async def ping(ctx):
 
 @bot.command()
 async def report(ctx, user):
+    member = ctx.message.author
+    message = ctx.message
+    def pred(m):
+        return m.author == message.author
+    await member.create_dm()
     await member.send(f"Beskriv ditt problem:")
     message = await bot.wait_for('message', check=pred)
     await bot.send(bot.getChannel("555823680148602901"), f"A new bug was reported by {user.mention}")
