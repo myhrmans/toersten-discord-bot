@@ -100,7 +100,7 @@ async def nickname(ctx, member:discord.User = None):
     resp = browser.submit_selected()
     name = resp.text
     name = lxml.html.fromstring(name)
-    name = courses.cssselect("a[id='global-nav-link']")
+    name = name.cssselect("a[id='global-nav-link']")
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer ditt namn:")
     await member.send(f"{name}")
 
