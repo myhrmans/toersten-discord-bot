@@ -99,7 +99,6 @@ async def nickname(ctx, member:discord.User = None):
     browser["password"] = password.content
     resp = browser.submit_selected()
     channel = bot.get_channel(555823680148602901)
-    print(resp.text)
     name = resp.text.split("class=global-top-avatar /> ")
     name = name[1].split("class=global-top-avatar /> ")
     name = name[0]
