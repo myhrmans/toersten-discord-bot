@@ -19,13 +19,6 @@ async def ping(ctx):
     await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL... as we say in swedish!")
 
 @bot.command()
-async def report(ctx, user):
-    await member.send(f"Beskriv ditt problem:")
-    message = await bot.wait_for('message', check=pred)
-    await bot.send(bot.getChannel("555823680148602901"), f"A new bug was reported by {user.mention}")
-    await bot.send(bot.getChannel("555823680148602901"), f"Description: {message}")
-    
-@bot.command()
 async def version(ctx):
     await ctx.channel.send("Current Version: {}".format(bot_version))
 
@@ -95,8 +88,8 @@ async def nickname(ctx, member:discord.User = None):
     resp2 = browser.post("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction", params='action=refreshAjaxModule&modId=_25_1&tabId=_1_1&tab_tab_group_id=_1_1');
     courses = resp2.text
     courses = lxml.html.fromstring(courses)
-    courses = courses.cssselect("a")
-    await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
+    courses = courses.cssselect("a[id='global-nav-link']")
+    await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer ditt namn:")
     for l in courses:
         await member.send(f"{l.text}")
 
