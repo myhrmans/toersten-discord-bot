@@ -25,8 +25,8 @@ async def version(ctx):
 @bot.event
 async def on_reaction_add(reaction, user):
     reactionResponses = {
-        ':beers:': f"{user.mention} bjuder alla på en backbro, SKÅL!",
-        ':beer:' : f"{user.mention} bjuder alla på en tvåbro, SKÅL!"
+        '🍻': f"{user.mention} bjuder alla på en backbro, SKÅL!",
+        '🍺' : f"{user.mention} bjuder alla på en tvåbro, SKÅL!"
     }
     print(reaction.str)
     channel = reaction.message.channel
