@@ -13,7 +13,7 @@ Toersten daily task is to drink beer and handle the people in Ödets discord
 - Automatically set user privileges according to their course attendance on Blackboard
 - Create Youtube-playlist with Nolle-listan
 - Add avatar image to Toersten
-- Add bugg report with notification to admins
+- Add bug report with notification to admins
 
 ## Commands
 | Command | Description |
