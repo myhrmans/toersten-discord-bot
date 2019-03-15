@@ -1,4 +1,5 @@
 import discord
+import platform
 from discord.ext import commands
 import mechanicalsoup
 import lxml.html
@@ -34,6 +35,9 @@ async def report(ctx, member:discord.User = None):
 @bot.command()
 async def version(ctx):
     await ctx.channel.send("Current Version: {}".format(bot_version))
+    os_name = platform.uname()
+    os_name = os_name[0]
+    await ctx.channel.send("Current OS: {}".format(os_name))
 
 @bot.event
 async def on_reaction_add(reaction, user):
@@ -139,4 +143,11 @@ async def nickname(ctx, member:discord.User = None):
     await member.send(f"Hej {name}.")
     await member.edit(nick=name)
     
-bot.run("NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30")
+
+local = "NTU2MDE3MzUzNTQwNzYzNjU5.D2znBw.0NOi0JUtvV8GmrprO9F7RzTFrFU"
+master = "NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30"
+
+#if():
+bot.run(master)
+#else:
+#    bot.run(local)
