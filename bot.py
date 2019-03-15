@@ -36,7 +36,7 @@ async def report(ctx, member:discord.User = None):
 async def version(ctx):
     await ctx.channel.send("Current Version: {}".format(bot_version))
     os_name = platform.uname()
-    await ctx.channel.send(f"Current OS: {os_name[0]}, Current node: {os_name[1]}, Current: {os_name}".format(os_name))
+    await ctx.channel.send(f"OS info: {os_name}".format(os_name))
 
 @bot.event
 async def on_reaction_add(reaction, user):
