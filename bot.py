@@ -3,7 +3,13 @@ import platform
 from discord.ext import commands
 import mechanicalsoup
 import lxml.html
-bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
+if(platform.uname()[1]=="raspberrypi"):
+    bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
+else:
+    bot = commands.Bot(command_prefix="l: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
+
+
+#bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
 bot.remove_command("help")
 bot_version = "1.00"
 
@@ -146,7 +152,7 @@ async def nickname(ctx, member:discord.User = None):
 local = "NTU2MDE3MzUzNTQwNzYzNjU5.D2znBw.0NOi0JUtvV8GmrprO9F7RzTFrFU"
 master = "NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30"
 
-#if():
-bot.run(master)
-#else:
-#    bot.run(local)
+if(platform.uname()[1]=="raspberrypi"):
+    bot.run(master)
+else:
+    bot.run(local)
