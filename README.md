@@ -2,7 +2,7 @@
 Toersten daily task is to drink beer and handle the people in Ödets discord
 
 ## Instructions
-When doing development run the command:
+When doing development run the command in the main folder to start the server:
 ```python
 python bot.py
 ```
