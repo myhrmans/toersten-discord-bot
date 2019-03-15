@@ -36,8 +36,7 @@ async def report(ctx, member:discord.User = None):
 async def version(ctx):
     await ctx.channel.send("Current Version: {}".format(bot_version))
     os_name = platform.uname()
-    os_name = os_name[0]
-    await ctx.channel.send("Current OS: {}".format(os_name))
+    await ctx.channel.send(f"Current OS: {os_name[0]}, Current node: {os_name[1]}, Current: {os_name}".format(os_name))
 
 @bot.event
 async def on_reaction_add(reaction, user):
@@ -148,6 +147,6 @@ local = "NTU2MDE3MzUzNTQwNzYzNjU5.D2znBw.0NOi0JUtvV8GmrprO9F7RzTFrFU"
 master = "NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30"
 
 #if():
-bot.run(master)
+    bot.run(master)
 #else:
 #    bot.run(local)
