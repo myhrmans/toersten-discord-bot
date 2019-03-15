@@ -1,6 +1,13 @@
 # toersten-discord-bot
 Toersten daily task is to drink beer and handle the people in Ödets discord
 
+## Instructions
+When doing development run the command:
+python bot.py
+To be able to run the bot locally you need the following moduals:
+- mechanicalsoup
+- discord#rewrite
+- cssselector
 
 ## Current Features
 - Check latency
