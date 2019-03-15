@@ -148,6 +148,6 @@ local = "NTU2MDE3MzUzNTQwNzYzNjU5.D2znBw.0NOi0JUtvV8GmrprO9F7RzTFrFU"
 master = "NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30"
 
 #if():
-#    bot.run(master)
+bot.run(master)
 #else:
 #    bot.run(local)
