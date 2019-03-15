@@ -11,9 +11,9 @@ Toersten daily task is to drink beer and handle the people in Ödets discord
 - Get courseIDs from blackboard
 
 ## Todo
-- Create channels for each course
 - Automatically set user privileges according to their course attendance on Blackboard
 - Create Youtube-playlist with Nolle-listan
+- Update courses which has no courseID yet
 
 ## Commands
 | Command | Description |
