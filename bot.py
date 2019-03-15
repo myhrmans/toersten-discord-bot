@@ -1,4 +1,5 @@
 import discord
+import os
 from discord.ext import commands
 import mechanicalsoup
 import lxml.html
@@ -138,5 +139,10 @@ async def nickname(ctx, member:discord.User = None):
     #for l in name:
     await member.send(f"Hej {name}.")
     await member.edit(nick=name)
-    
-bot.run("NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30")
+
+local = "NTU2MDE3MzUzNTQwNzYzNjU5.D2znBw.0NOi0JUtvV8GmrprO9F7RzTFrFU"
+master = "NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30"
+if():
+    bot.run(local)
+else:
+    bot.run(master)
