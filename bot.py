@@ -3,6 +3,7 @@ import platform
 from discord.ext import commands
 import mechanicalsoup
 import lxml.html
+
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
 else:
@@ -12,6 +13,16 @@ else:
 #bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
 bot.remove_command("help")
 bot_version = "1.00"
+class Kurs:
+  def __init__(self, name, ID, hp, current):
+      self.name = name
+      self.ID = ID
+      self.hp = hp
+      self.current = current
+  def isCurrent(self):
+      return self.current;
+  def printCourse(self):
+      return self.name + " | " + str(self.ID) + "hp | " + self.ID
 
 @bot.event
 async def on_ready():
@@ -66,7 +77,6 @@ async def courses(ctx, member:discord.User = None):
     username = await bot.wait_for('message', check=pred)
     await member.send(f"Okej {username.content}. Bara ett steg kvar.. ditt lösenord:")
     password = await bot.wait_for('message', check=pred)
-    #await member.send(f"{username.content} och {password.content}")
     browser = mechanicalsoup.browser = mechanicalsoup.StatefulBrowser(
         soup_config={'features': 'lxml'},
         raise_on_404=True
@@ -115,6 +125,39 @@ async def register(ctx, member:discord.User = None):
         courseID = courseID[1]
         courseID = courseID[1:7]
         await member.send(f"{courseID}")
+
+@bot.command()
+async def ladok(ctx, member:discord.User = None):
+    member = ctx.message.author
+    message = ctx.message
+    def pred(m):
+        return m.author == message.author
+    await member.create_dm()
+    #await member.send(f"Ange ditt Blackboard användarnamn (exempel marmyh16):")
+    username = "marmyh16"
+    #await member.send(f"Okej {username.content}. Bara ett steg kvar.. ditt lösenord:")
+    password = ""
+    #await member.send(f"{username.content} och {password.content}")
+    browser = mechanicalsoup.browser = mechanicalsoup.StatefulBrowser(
+        soup_config={'features': 'lxml'},
+        raise_on_404=True
+    )
+    login_page = browser.open("https://md.nordu.net/role/idp.ds?entityID=https%3A%2F%2Fwww.student.ladok.se%2Fstudent-sp&return=https%3A%2F%2Fwww.student.ladok.se%2FShibboleth.sso%2FLogin%3FSAMLDS%3D1%26target%3Dcookie%253A1552668759_d122")
+    browser.launch_browser()
+    #login_form = browser.select_form('#loginBoxFull form')
+    #browser["user_id"] = username.content
+    #browser["password"] = password.content
+    #resp = browser.submit_selected()
+    #resp2 = browser.post("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction", params='action=refreshAjaxModule&modId=_25_1&tabId=_1_1&tab_tab_group_id=_1_1');
+    #courses = resp2.text
+    #courses = lxml.html.fromstring(courses)
+    #courses = courses.cssselect("a")
+    #await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
+    #for l in courses:
+    #    courseID = l.text.split("HP")
+    #    courseID = courseID[1]
+    #    courseID = courseID[1:7]
+    #    await member.send(f"{courseID}")
 
 @bot.command()
 async def nickname(ctx, member:discord.User = None):
