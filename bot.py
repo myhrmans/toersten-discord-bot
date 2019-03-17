@@ -3,7 +3,14 @@ import platform
 from discord.ext import commands
 import mechanicalsoup
 import lxml.html
-
+import secrets
+from flask import Flask
+app = Flask(__name__, static_url_path='')
+@app.route("/login")
+def login():
+    return app.send_static_file('authentication-website/index.html')
+if __name__ == "__main__":
+    app.run()
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
 else:
@@ -32,8 +39,9 @@ async def on_ready():
 
 @bot.command()
 async def ping(ctx):
-    ping_ = bot.latency
-    ping = round(ping_ * 1000)
+    await ctx.channel.send(f"To authenticate open this website: http://158.174.180.57/login?id={secrets.token_urlsafe(32)}")
+    ping = bot.latency
+    ping = round(ping * 1000)
     await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL as we say in swedish!")
 
 @bot.command()
