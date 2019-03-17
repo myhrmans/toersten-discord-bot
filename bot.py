@@ -7,6 +7,7 @@ import secrets
 import urllib.parse
 import json
 import socketserver
+import asyncio
 from threading import Thread
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -54,7 +55,7 @@ class listen_for_request(BaseHTTPRequestHandler):
             if(user.user_id()==id['value']):
                 user.set_user(username['value'])
                 user.set_password(password['value'])
-                Thread(target=register,args=(user,)).start()
+                result = loopish.run_until_complete(register(user))              # Start a worker processes.
         #self._set_headers()
 def host_HTTP():
     print("started http")
@@ -73,7 +74,7 @@ async def ping(ctx):
     member = ctx.message.author
     secret = secrets.token_urlsafe(32)
     register_list.append(user_register(member,secret))
-    await ctx.channel.send(f"To authenticate open this website: http://158.174.180.57/login?id={secret}")
+    await ctx.channel.send(f"To authenticate open this website: http://localhost:3333/login?id={secret}")
     ping = bot.latency
     ping = round(ping * 1000)
     await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL as we say in swedish!")
@@ -135,8 +136,8 @@ async def courses(ctx, member:discord.User = None):
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
     for l in courses:
         await member.send(f"{l.text}")
-
-def register(user):
+        
+async def register(user):
     print("Register")
     print(user.__getattribute__("member"))
     print(user.__getattribute__("ID"))
@@ -147,8 +148,7 @@ def register(user):
     username = user.__getattribute__("username")
     password = user.__getattribute__("password")
     print(type(member))
-    await member.__class__.create_dm()
-    await member.__class__.send(f"{username.content} och {password.content}")
+    await member.create_dm()
     browser = mechanicalsoup.browser = mechanicalsoup.StatefulBrowser(
         soup_config={'features': 'lxml'},
         raise_on_404=True
@@ -162,12 +162,12 @@ def register(user):
     courses = resp2.text
     courses = lxml.html.fromstring(courses)
     courses = courses.cssselect("a")
-    #await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
+    await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
     for l in courses:
         courseID = l.text.split("HP")
         courseID = courseID[1]
         courseID = courseID[1:7]
-        #await member.send(f"{courseID}")
+        await member.send(f"{courseID}")
 
 @bot.command()
 async def ladok(ctx, member:discord.User = None):
@@ -242,6 +242,7 @@ if(platform.uname()[1]=="raspberrypi"):
     try:
         Thread(target=bot.run(),args=(master,)).start()
         Thread(target=host_HTTP).start()
+        loopish = asyncio.get_event_loop()
     except:
         print ("Error: unable to start thread")
     
@@ -249,5 +250,6 @@ else:
     try:
         Thread(target=bot.run,args=(local,)).start()
         Thread(target=host_HTTP).start()
+        loopish = asyncio.get_event_loop()
     except:
         print ("Error: unable to start thread")
