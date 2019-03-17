@@ -4,33 +4,41 @@ from discord.ext import commands
 import mechanicalsoup
 import lxml.html
 import secrets
-from flask import Flask
-app = Flask(__name__, static_url_path='')
-@app.route("/login")
-def login():
-    return app.send_static_file('authentication-website/index.html')
-if __name__ == "__main__":
-    app.run()
+import urllib.parse
+import json
+import socketserver
+from threading import Thread
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
 else:
     bot = commands.Bot(command_prefix="l: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
-
-
-#bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
 bot.remove_command("help")
 bot_version = "1.00"
-class Kurs:
-  def __init__(self, name, ID, hp, current):
-      self.name = name
-      self.ID = ID
-      self.hp = hp
-      self.current = current
-  def isCurrent(self):
-      return self.current;
-  def printCourse(self):
-      return self.name + " | " + str(self.ID) + "hp | " + self.ID
+register_list= list()
 
+class user_register:
+    def __init__(self, member, ID, username, password):
+        self.member = member
+        self.ID = ID
+        self.username = username
+        self.password = password
+
+class listen_for_request(BaseHTTPRequestHandler):
+    def do_POST(self):
+        # Doesn't do anything with posted data
+        self.send_response(200, "ok")
+        content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
+        self.end_headers()
+        post_data = self.rfile.read(content_length) # <--- Gets the data itself
+        print( "incomming http: ", self.path )
+        print (post_data) # <-- Print post data
+        #self._set_headers()
+def host_HTTP():
+    print("started http")
+    httpd = socketserver.TCPServer(("", 3333), listen_for_request)
+    httpd.serve_forever()
 @bot.event
 async def on_ready():
     print("Ready to go!")
@@ -204,6 +212,15 @@ local = "NTU2MDE3MzUzNTQwNzYzNjU5.D2znBw.0NOi0JUtvV8GmrprO9F7RzTFrFU"
 master = "NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30"
 
 if(platform.uname()[1]=="raspberrypi"):
-    bot.run(master)
+    try:
+        Thread(target=bot.run(),args=(master,)).start()
+        Thread(target=host_HTTP).start()
+    except:
+        print ("Error: unable to start thread")
+    
 else:
-    bot.run(local)
+    try:
+        Thread(target=bot.run,args=(local,)).start()
+        Thread(target=host_HTTP).start()
+    except:
+        print ("Error: unable to start thread")
