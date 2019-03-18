@@ -250,10 +250,6 @@ for line in course_file:
         course_list.append(course(line[0],line[1],year))
 if(platform.uname()[1]=="raspberrypi"):
     try:
-        Thread(target=bot.run,args=(master,)).start()
-    except:
-        print ("Error1: unable to start thread")
-    try:
         Thread(target=host_HTTP).start()
     except:
         print ("Error2: unable to start thread")
@@ -261,6 +257,10 @@ if(platform.uname()[1]=="raspberrypi"):
         loopish = asyncio.get_event_loop()
     except:
         print ("Error3: unable to start thread")
+    try:
+        bot.run(master)
+    except:
+        print ("Error1: unable to start thread")
 else:
     try:
         Thread(target=bot.run,args=(local,)).start()
