@@ -18,7 +18,20 @@ else:
 bot.remove_command("help")
 bot_version = "1.00"
 register_list = []
+course_list = []
 
+class course:
+    def __init__(self, courseID, channelID, year):
+        self.courseID = courseID
+        self.channelID = channelID
+        self.year = year
+    def get_courseID(self):
+        return self.courseID
+    def get_channelID(self):
+        return self.channelID
+    def get_year(self):
+        return self.channelID
+    
 class user_register:
     def __init__(self, member, ID):
         self.member = member
@@ -61,7 +74,6 @@ def host_HTTP():
     print("started http")
     httpd = socketserver.TCPServer(("", 3333), listen_for_request)
     httpd.serve_forever()
-    
 @bot.event
 async def on_ready():
     print("Ready to go!")
@@ -138,16 +150,10 @@ async def courses(ctx, member:discord.User = None):
         await member.send(f"{l.text}")
         
 async def register(user):
-    print("Register")
-    print(user.__getattribute__("member"))
-    print(user.__getattribute__("ID"))
-    print(user.__getattribute__("username"))
-    print(user.__getattribute__("password"))
     member = user.get_member()
     ID = user.__getattribute__("ID")
     username = user.__getattribute__("username")
     password = user.__getattribute__("password")
-    print(type(member))
     await member.create_dm()
     browser = mechanicalsoup.browser = mechanicalsoup.StatefulBrowser(
         soup_config={'features': 'lxml'},
@@ -162,11 +168,15 @@ async def register(user):
     courses = resp2.text
     courses = lxml.html.fromstring(courses)
     courses = courses.cssselect("a")
-    await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
+    await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser, dessa har du även tillgång till nu:")
     for l in courses:
         courseID = l.text.split("HP")
         courseID = courseID[1]
         courseID = courseID[1:7]
+        for course in course_list:
+            if(course.get_courseID==courseID):
+                channel = bot.get_channel(course.get_channelID)
+                await channel.set_permissions(member, overwrite=None)
         await member.send(f"{courseID}")
 
 @bot.command()
@@ -237,7 +247,13 @@ async def nickname(ctx, member:discord.User = None):
 
 local = "NTU2MDE3MzUzNTQwNzYzNjU5.D2znBw.0NOi0JUtvV8GmrprO9F7RzTFrFU"
 master = "NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30"
-
+course_file = open("courses/courses.txt", "r")
+year=-1
+for line in course_file:
+        line = line.split(" ")
+        if(line[0]=="ÅR"):
+            year=line[1]
+        course_list.append(course(line[0],line[1],year))
 if(platform.uname()[1]=="raspberrypi"):
     try:
         Thread(target=bot.run(),args=(master,)).start()
