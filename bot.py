@@ -251,11 +251,16 @@ for line in course_file:
 if(platform.uname()[1]=="raspberrypi"):
     try:
         Thread(target=bot.run,args=(master,)).start()
+    except:
+        print ("Error1: unable to start thread")
+    try:
         Thread(target=host_HTTP).start()
+    except:
+        print ("Error2: unable to start thread")
+    try:
         loopish = asyncio.get_event_loop()
     except:
-        print ("Error: unable to start thread")
-    
+        print ("Error3: unable to start thread")
 else:
     try:
         Thread(target=bot.run,args=(local,)).start()
