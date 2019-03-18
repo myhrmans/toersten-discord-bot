@@ -58,8 +58,12 @@ class listen_for_request(BaseHTTPRequestHandler):
         x = json.loads(jsona)
         username=x[0]
         password=x[1]
+        print("post event")
         id=x[2]
         for user in register_list:
+            print("post event")
+            print(x[2])
+            print(user.user_id())
             if(user.user_id()==id['value']):
                 user.set_user(username['value'])
                 user.set_password(password['value'])
@@ -81,7 +85,7 @@ async def ping(ctx):
     member = ctx.message.author
     secret = secrets.token_urlsafe(32)
     register_list.append(user_register(member,secret))
-    await ctx.channel.send(f"To authenticate open this website: http://158.174.180.57:7777/?id={secret}")
+    await ctx.channel.send(f"To authenticate open this website: http://158.174.180.57:7777/?ID={secret}")
     ping = bot.latency
     ping = round(ping * 1000)
     await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL as we say in swedish!")
@@ -145,6 +149,7 @@ async def courses(ctx, member:discord.User = None):
         await member.send(f"{l.text}")
         
 async def register(user):
+    print("Register")
     member = user.get_member()
     ID = user.__getattribute__("ID")
     username = user.__getattribute__("username")
@@ -169,9 +174,10 @@ async def register(user):
         courseID = courseID[1]
         courseID = courseID[1:7]
         for course in course_list:
-            if(course.get_courseID==courseID):
-                channel = bot.get_channel(course.get_channelID)
-                await channel.set_permissions(member, overwrite=None)
+            if(course.get_courseID()==courseID):
+                channel = bot.get_channel(int(course.get_channelID()))
+                await channel.set_permissions(member, read_messages=True,
+                                                      send_messages=True)
         await member.send(f"{courseID}")
 
 @bot.command()
