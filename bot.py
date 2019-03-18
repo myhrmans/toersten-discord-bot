@@ -52,18 +52,13 @@ class listen_for_request(BaseHTTPRequestHandler):
         # Doesn't do anything with posted data
         self.send_response(200, "ok")
         content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
-        #print(self.headers['Content-Length'])
         self.end_headers() 
         post_data = self.rfile.read(content_length) # <--- Gets the data itself
-        print( "incomming http: ", self.path ) # <-- Print post data
         jsona = post_data.decode("utf-8")
         x = json.loads(jsona)
         username=x[0]
         password=x[1]
         id=x[2]
-        print(username['value'])
-        print(password['value'])
-        print(id['value'])
         for user in register_list:
             if(user.user_id()==id['value']):
                 user.set_user(username['value'])
@@ -86,7 +81,7 @@ async def ping(ctx):
     member = ctx.message.author
     secret = secrets.token_urlsafe(32)
     register_list.append(user_register(member,secret))
-    await ctx.channel.send(f"To authenticate open this website: http://158.174.180.57:7777/login?id={secret}")
+    await ctx.channel.send(f"To authenticate open this website: http://158.174.180.57:7777/?id={secret}")
     ping = bot.latency
     ping = round(ping * 1000)
     await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL as we say in swedish!")
@@ -238,7 +233,6 @@ async def nickname(ctx, member:discord.User = None):
     name = resp.text.split("class=global-top-avatar /> ")
     name = name[1].split("<span id=badgeTotal")
     name = name[0]
-    print(name[0])
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer ditt namn:")
     #for l in name:
     await member.send(f"Hej {name}.")
