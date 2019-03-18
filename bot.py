@@ -86,7 +86,7 @@ async def ping(ctx):
     member = ctx.message.author
     secret = secrets.token_urlsafe(32)
     register_list.append(user_register(member,secret))
-    await ctx.channel.send(f"To authenticate open this website: http://localhost:3333/login?id={secret}")
+    await ctx.channel.send(f"To authenticate open this website: http://158.174.180.57:7777/login?id={secret}")
     ping = bot.latency
     ping = round(ping * 1000)
     await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL as we say in swedish!")
