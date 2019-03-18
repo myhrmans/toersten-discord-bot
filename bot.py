@@ -250,7 +250,7 @@ for line in course_file:
         course_list.append(course(line[0],line[1],year))
 if(platform.uname()[1]=="raspberrypi"):
     try:
-        Thread(target=bot.run(),args=(master,)).start()
+        Thread(target=bot.run,args=(master,)).start()
         Thread(target=host_HTTP).start()
         loopish = asyncio.get_event_loop()
     except:
