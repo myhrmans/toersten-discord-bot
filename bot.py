@@ -77,10 +77,6 @@ async def on_ready():
 
 @bot.command()
 async def ping(ctx):
-    member = ctx.message.author
-    secret = secrets.token_urlsafe(32)
-    register_list.append(user_register(member,secret))
-    await ctx.channel.send(f"To authenticate open this website: http://158.174.180.57:7777/?ID={secret}")
     ping = bot.latency
     ping = round(ping * 1000)
     await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL as we say in swedish!")
@@ -98,6 +94,16 @@ async def report(ctx, member:discord.User = None):
     await channel.send(f"A new bug was reported by {member.mention}")
     await channel.send(f"Description: {message.content}")
 
+@bot.event
+async def on_raw_reaction_add(payload):
+    if(payload.message_id == 557509716671070213):
+        member = bot.get_user(payload.user_id)
+        secret = secrets.token_urlsafe(32)
+        register_list.append(user_register(member,secret))
+        await member.create_dm()
+        await member.send(f"Thanks for accepting the rules of this server. You will now get a URL to authenticate yourself against.")
+        await member.send(f"To authenticate open this website: http://158.174.180.57:7777/?ID={secret}")
+        await member.send(f"Once you're done with this you will have access to your classes.")
 @bot.command()
 async def unregister(ctx, member:discord.User = None):
     member = ctx.message.author
@@ -107,10 +113,9 @@ async def unregister(ctx, member:discord.User = None):
     await member.create_dm()
     await member.send(f"Beskriv ditt problem:")
     message = await bot.wait_for('message', check=pred)
-    channels = bot.get_all_channels
+    channels = bot.get_all_channels()
     for channel in channels:
-        if(channel.permission_for(member)):
-            await channel.set_permissions(member, overwrite=None)
+        await channel.set_permissions(member, overwrite=None)
     await channel.send(f"All channels removed")
 
 @bot.command()
@@ -189,39 +194,6 @@ async def register(user):
                 await channel.set_permissions(member, read_messages=True,
                                                       send_messages=True)
         await member.send(f"{courseID}")
-
-@bot.command()
-async def ladok(ctx, member:discord.User = None):
-    member = ctx.message.author
-    message = ctx.message
-    def pred(m):
-        return m.author == message.author
-    await member.create_dm()
-    #await member.send(f"Ange ditt Blackboard användarnamn (exempel marmyh16):")
-    username = "marmyh16"
-    #await member.send(f"Okej {username.content}. Bara ett steg kvar.. ditt lösenord:")
-    password = ""
-    #await member.send(f"{username.content} och {password.content}")
-    browser = mechanicalsoup.browser = mechanicalsoup.StatefulBrowser(
-        soup_config={'features': 'lxml'},
-        raise_on_404=True
-    )
-    login_page = browser.open("https://md.nordu.net/role/idp.ds?entityID=https%3A%2F%2Fwww.student.ladok.se%2Fstudent-sp&return=https%3A%2F%2Fwww.student.ladok.se%2FShibboleth.sso%2FLogin%3FSAMLDS%3D1%26target%3Dcookie%253A1552668759_d122")
-    browser.launch_browser()
-    #login_form = browser.select_form('#loginBoxFull form')
-    #browser["user_id"] = username.content
-    #browser["password"] = password.content
-    #resp = browser.submit_selected()
-    #resp2 = browser.post("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction", params='action=refreshAjaxModule&modId=_25_1&tabId=_1_1&tab_tab_group_id=_1_1');
-    #courses = resp2.text
-    #courses = lxml.html.fromstring(courses)
-    #courses = courses.cssselect("a")
-    #await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
-    #for l in courses:
-    #    courseID = l.text.split("HP")
-    #    courseID = courseID[1]
-    #    courseID = courseID[1:7]
-    #    await member.send(f"{courseID}")
 
 @bot.command()
 async def nickname(ctx, member:discord.User = None):
