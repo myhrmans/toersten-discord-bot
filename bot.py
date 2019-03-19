@@ -116,7 +116,7 @@ async def unregister(ctx, member:discord.User = None):
     channels = bot.get_all_channels()
     for channel in channels:
         await channel.set_permissions(member, overwrite=None)
-    await channel.send(f"All channels removed")
+    await member.send(f"All channels removed")
 
 @bot.command()
 async def version(ctx):
