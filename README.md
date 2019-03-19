@@ -1,5 +1,5 @@
 # toersten-discord-bot
-Toersten daily task is to drink beer and handle the people in Ödets discord
+Toersten daily task is to drink beer and handle the people in Ödets discord.
 
 ## Instructions
 When doing development run the command in the main folder to start the server:
