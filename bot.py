@@ -58,12 +58,8 @@ class listen_for_request(BaseHTTPRequestHandler):
         x = json.loads(jsona)
         username=x[0]
         password=x[1]
-        print("post event")
         id=x[2]
         for user in register_list:
-            print("post event")
-            print(x[2])
-            print(user.user_id())
             if(user.user_id()==id['value']):
                 user.set_user(username['value'])
                 user.set_password(password['value'])
@@ -81,7 +77,6 @@ async def on_ready():
 
 @bot.command()
 async def ping(ctx):
-    print(type(ctx.message.author))
     member = ctx.message.author
     secret = secrets.token_urlsafe(32)
     register_list.append(user_register(member,secret))
@@ -102,7 +97,22 @@ async def report(ctx, member:discord.User = None):
     channel = bot.get_channel(555823680148602901)
     await channel.send(f"A new bug was reported by {member.mention}")
     await channel.send(f"Description: {message.content}")
-    
+
+@bot.command()
+async def unregister(ctx, member:discord.User = None):
+    member = ctx.message.author
+    message = ctx.message
+    def pred(m):
+        return m.author == message.author
+    await member.create_dm()
+    await member.send(f"Beskriv ditt problem:")
+    message = await bot.wait_for('message', check=pred)
+    channels = bot.get_all_channels
+    for channel in channels:
+        if(channel.permission_for(member)):
+            await channel.set_permissions(member, overwrite=None)
+    await channel.send(f"All channels removed")
+
 @bot.command()
 async def version(ctx):
     await ctx.channel.send("Current Version: {}".format(bot_version))
