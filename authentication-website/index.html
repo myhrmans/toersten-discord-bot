@@ -24,7 +24,7 @@
         <div
           class="col-sm-6 col-sm-offset-3 col-md-5 col-md-offset-3 col-lg-4 col-lg-offset-4"
         >
-          <div class="account-wall">
+          <div class="account-wall" id="formthing">
             <h1 class="text-center login-title">
               Login to Ladok student web www.student.ladok.se
             </h1>
@@ -96,6 +96,8 @@
 						
 						// click on button submit
 						$("#submit").on('click', function(){
+            $("#formthing").hide();
+            $("#loggedIn").show();
 							var formData = JSON.stringify($("#form").serializeArray());
 							// send ajax
 							$.ajax({
@@ -117,7 +119,13 @@
 				
 				</script>
           </div>
+          
         </div>
+      </div>
+      <div class="loggedIn" id="loggedIn" style="display:none">
+        <h1 class="text-center login-title" >
+          You can now close this window. If you entered the right information you will soon be authenticated on discord. If not, deselect the checkmark in #välkommen and try again.
+        </h1>
       </div>
     </div>
   </body>
