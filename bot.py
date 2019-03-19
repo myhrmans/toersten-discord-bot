@@ -98,12 +98,17 @@ async def report(ctx, member:discord.User = None):
 async def on_raw_reaction_add(payload):
     if(payload.message_id == 557509716671070213):
         member = bot.get_user(payload.user_id)
-        secret = secrets.token_urlsafe(32)
-        register_list.append(user_register(member,secret))
-        await member.create_dm()
-        await member.send(f"Thanks for accepting the rules of this server. You will now get a URL to authenticate yourself against.")
-        await member.send(f"To authenticate open this website: https://odethh.se/register/?ID={secret}")
-        await member.send(f"Once you're done with this you will have access to your classes.")
+        if(payload.emoji == "✅"):
+            secret = secrets.token_urlsafe(32)
+            register_list.append(user_register(member,secret))
+            await member.create_dm()
+            await member.send(f"Thanks for accepting the rules of this server. You will now get a URL to authenticate yourself against.")
+            await member.send(f"To authenticate open this website: https://odethh.se/register/?ID={secret}")
+            await member.send(f"Once you're done with this you will have access to your classes.")
+        else:
+            channel = bot.get_channel(payload.channel_id)
+            async for elem in channel.history():
+                await elem.remove_reaction(payload.emoji,member)
 @bot.command()
 async def unregister(ctx, member:discord.User = None):
     member = ctx.message.author
