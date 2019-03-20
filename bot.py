@@ -340,5 +340,5 @@ elif(sys.argv[1] == "0010"):
             bot.run(decryptedHost)
             decryptedHost = 0
         except Exception as e: 
-            print(e)
+            print(f"Test: {e}")
             print("Error1: unable to start thread")
