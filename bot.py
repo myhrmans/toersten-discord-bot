@@ -275,7 +275,8 @@ if(platform.uname()[1]=="raspberrypi"):
         bot.run(decryptedHost)
         decryptedHost = 0
         #bot.run(master)
-    except:
+    except Exception as e:
+        print(f"Test: {e}")
         print ("Error1: unable to start thread")
 #--------- TO START BOT LOCAL BOT 0001 ----------------
 elif(sys.argv[1] == "0001"):
@@ -340,5 +341,4 @@ elif(sys.argv[1] == "0010"):
             bot.run(decryptedHost)
             decryptedHost = 0
         except Exception as e: 
-            print(f"Test: {e}")
             print("Error1: unable to start thread")
