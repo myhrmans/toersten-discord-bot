@@ -339,5 +339,6 @@ elif(sys.argv[1] == "0010"):
             decryptedHost = base64.decodestring(xor_strings(bytes(local0010Encrypted, encoding="UTF-8"), key)).decode("UTF-8")
             bot.run(decryptedHost)
             decryptedHost = 0
-        except:
-            print ("Error1: unable to start thread")
+        except Exception as e: 
+            print(e)
+            print("Error1: unable to start thread")
