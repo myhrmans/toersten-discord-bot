@@ -10,6 +10,10 @@ import socketserver
 import asyncio
 from threading import Thread
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import sys
+from itertools import cycle
+import base64
+from os import urandom
 
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
@@ -233,6 +237,24 @@ local = "NTU2MDE3MzUzNTQwNzYzNjU5.D2znBw.0NOi0JUtvV8GmrprO9F7RzTFrFU"
 master = "NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30"
 course_file = open("courses/courses.txt", "r")
 year=-1
+
+""" ------------------------------- Encryption -------------------------------"""
+local0001Encrypted = "6+k<\x14gN=\x192=`X%4@>\x01'95\x18_<d^0\x08o/hd;\x13\x1c\x10\x19\x03@\x12\x1d@_\x1e\x0e\x19.5\x0e&\x05P\x01\x11\x00\x05\x0e\x11-\t\x19\x00!g[\x0c#K;\r\r#-\x05\x06 :k\t,\x04`"
+local0010Encrypted = "6+k<\x14<F=\x1f>\x03~o\x0e\x11\x0f>5\x05%\x1c}_{gR\x12\x08X\x06\x0cf;\x13\x1c\x13(]?!#@^.\x03\x1cA='\x08@\\\x06\x0fc=\x16\x12\x13\x0c.\x04\x0fI^\x18+~$h\x1dA.\x0804:X\x0e\x12\x04`"
+masterEncrypted = "6^\x00:)\x01p\x08\x18.\x07s\\'\x02+8T\x16\x134\x18O h^(|3\x00!u\t\x12\x1c\x03\x0bSG\x15g\x01Y>\x12/7&\x18\x05Ys\x03e>;0\x1c-3\x00\x00\x0bjX7\x07'\r\t<w+\x7f\x02?7G\x18sof"
+
+def xor_strings(string, theKey):
+    """xor two strings together"""
+    if isinstance(string, str):
+        # Text strings contain single characters
+        return b"".join(chr(ord(a) ^ ord(b)) for a, b in zip(string, cycle(key)))
+    else:
+        # Python 3 bytes objects contain integer values in the range 0-255
+        return bytes([a ^ b for a, b in zip(string, cycle(key))])   
+
+""" --------------------------------------------------------------------------"""
+
+
 for line in course_file:
         line = line.split(" ")
         if(line[0]=="ÅR"):
@@ -248,13 +270,35 @@ if(platform.uname()[1]=="raspberrypi"):
     except:
         print ("Error3: unable to start thread")
     try:
-        bot.run(master)
+        key = base64.encodestring(bytes(sys.argv[2], encoding="UTF-8"))
+        decryptedHost = base64.decodestring(xor_strings(bytes(masterEncrypted, encoding="UTF-8"), key)).decode("UTF-8")
+        bot.run(decryptedHost)
+        decryptedHost = 0
+        #bot.run(master)
     except:
         print ("Error1: unable to start thread")
-else:
+elif(sys.argv[1] == "0001"):
     try:
-        Thread(target=bot.run,args=(local,)).start()
+        #Thread(target=bot.run,args=(local,)).start()
+        key = base64.encodestring(bytes(sys.argv[2], encoding="UTF-8"))
+        decryptedHost = base64.decodestring(xor_strings(bytes(local0001Encrypted, encoding="UTF-8"), key)).decode("UTF-8")
+
+        Thread(target=bot.run,args=(decryptedHost,)).start()
+        decryptedHost = 0
         Thread(target=host_HTTP).start()
         loopish = asyncio.get_event_loop()
     except:
         print ("Error: unable to start thread")
+elif(sys.argv[1] == "0010"):
+    try:
+        #Thread(target=bot.run,args=(local,)).start()
+        key = base64.encodestring(bytes(sys.argv[2], encoding="UTF-8"))
+        decryptedHost = base64.decodestring(xor_strings(bytes(local0010Encrypted, encoding="UTF-8"), key)).decode("UTF-8")
+
+        Thread(target=bot.run,args=(decryptedHost,)).start()
+        decryptedHost = 0
+        Thread(target=host_HTTP).start()
+        loopish = asyncio.get_event_loop()
+    except:
+        print ("Error: unable to start thread")
+
