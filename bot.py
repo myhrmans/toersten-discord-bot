@@ -270,14 +270,13 @@ if(platform.uname()[1]=="raspberrypi"):
     except:
         print ("Error3: unable to start thread")
     try:
-        key = base64.encodestring(bytes(sys.argv[2], encoding="UTF-8"))
+        key = base64.encodestring(bytes(sys.argv[1], encoding="UTF-8"))
         decryptedHost = base64.decodestring(xor_strings(bytes(masterEncrypted, encoding="UTF-8"), key)).decode("UTF-8")
         bot.run(decryptedHost)
         decryptedHost = 0
         #bot.run(master)
     except Exception as e:
-        print(f"Test: {e}")
-        print ("Error1: unable to start thread")
+        print(f"Fail bot: {e}")
 #--------- TO START BOT LOCAL BOT 0001 ----------------
 elif(sys.argv[1] == "0001"):
     # SPECAIL CASE IF LOCAL BOT ISN'T RUNNING ON UNIX SYSTEM
@@ -308,8 +307,8 @@ elif(sys.argv[1] == "0001"):
             decryptedHost = base64.decodestring(xor_strings(bytes(local0001Encrypted, encoding="UTF-8"), key)).decode("UTF-8")
             bot.run(decryptedHost)
             decryptedHost = 0
-        except:
-            print ("Error1: unable to start thread")
+        except Exception as e:
+            print(f"Fail bot: {e}")
 #--------- TO START BOT LOCAL BOT 0002 ----------------
 elif(sys.argv[1] == "0010"):
     # SPECAIL CASE IF LOCAL BOT ISN'T RUNNING ON UNIX SYSTEM
@@ -340,5 +339,5 @@ elif(sys.argv[1] == "0010"):
             decryptedHost = base64.decodestring(xor_strings(bytes(local0010Encrypted, encoding="UTF-8"), key)).decode("UTF-8")
             bot.run(decryptedHost)
             decryptedHost = 0
-        except Exception as e: 
-            print("Error1: unable to start thread")
+        except Exception as e:
+            print(f"Fail bot: {e}")
