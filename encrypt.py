@@ -1,7 +1,8 @@
 import sys
 from itertools import cycle
 import base64
-from os import urandom
+
+
 
 
 def xor_strings(s, t):
@@ -21,9 +22,11 @@ def main():
 
     key = base64.encodestring(bytes(inputKey, encoding="UTF-8"))
     cipherText = xor_strings(base64.encodestring(bytes(inputMessage, encoding="UTF-8")), key)
+    
     print('cipherText:', cipherText)
-    #decText = base64.decodestring(xor_strings(cipherText, key)).decode("UTF-8")
-    #print('decrypted: {}'.format(decText))
+    
+    decText = base64.decodestring(xor_strings(cipherText, key)).decode("UTF-8")
+    print('decrypted: {}'.format(decText))
 
     # verify
     if base64.decodestring(xor_strings(cipherText, key)).decode("UTF-8") == inputMessage:

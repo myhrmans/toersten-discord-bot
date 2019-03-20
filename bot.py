@@ -13,7 +13,6 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import sys
 from itertools import cycle
 import base64
-from os import urandom
 
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
@@ -260,6 +259,7 @@ for line in course_file:
         if(line[0]=="ÅR"):
             year=line[1]
         course_list.append(course(line[0],line[1],year))
+#--------- TO START MASTER BOT --------------
 if(platform.uname()[1]=="raspberrypi"):
     try:
         Thread(target=host_HTTP).start()
@@ -277,28 +277,67 @@ if(platform.uname()[1]=="raspberrypi"):
         #bot.run(master)
     except:
         print ("Error1: unable to start thread")
+#--------- TO START BOT LOCAL BOT 0001 ----------------
 elif(sys.argv[1] == "0001"):
-    try:
-        #Thread(target=bot.run,args=(local,)).start()
-        key = base64.encodestring(bytes(sys.argv[2], encoding="UTF-8"))
-        decryptedHost = base64.decodestring(xor_strings(bytes(local0001Encrypted, encoding="UTF-8"), key)).decode("UTF-8")
+    # SPECAIL CASE IF LOCAL BOT ISN'T RUNNING ON UNIX SYSTEM
+    if(platform.uname()[0] != "Linux"):
+        try:
+            #Thread(target=bot.run,args=(local,)).start()
+            key = base64.encodestring(bytes(sys.argv[2], encoding="UTF-8"))
+            decryptedHost = base64.decodestring(xor_strings(bytes(local0001Encrypted, encoding="UTF-8"), key)).decode("UTF-8")
 
-        Thread(target=bot.run,args=(decryptedHost,)).start()
-        decryptedHost = 0
-        Thread(target=host_HTTP).start()
-        loopish = asyncio.get_event_loop()
-    except:
-        print ("Error: unable to start thread")
+            Thread(target=bot.run,args=(decryptedHost,)).start()
+            decryptedHost = 0
+            Thread(target=host_HTTP).start()
+            loopish = asyncio.get_event_loop()
+        except:
+            print ("Error: unable to start thread")
+    # TO START LOCAL BOT ON UNIX SYSTEM
+    else:
+        try:
+            Thread(target=host_HTTP).start()
+        except:
+            print ("Error2: unable to start thread")
+        try:
+            loopish = asyncio.get_event_loop()
+        except:
+            print ("Error3: unable to start thread")
+        try:
+            key = base64.encodestring(bytes(sys.argv[2], encoding="UTF-8"))
+            decryptedHost = base64.decodestring(xor_strings(bytes(local0001Encrypted, encoding="UTF-8"), key)).decode("UTF-8")
+            bot.run(decryptedHost)
+            decryptedHost = 0
+        except:
+            print ("Error1: unable to start thread")
+#--------- TO START BOT LOCAL BOT 0002 ----------------
 elif(sys.argv[1] == "0010"):
-    try:
-        #Thread(target=bot.run,args=(local,)).start()
-        key = base64.encodestring(bytes(sys.argv[2], encoding="UTF-8"))
-        decryptedHost = base64.decodestring(xor_strings(bytes(local0010Encrypted, encoding="UTF-8"), key)).decode("UTF-8")
+    # SPECAIL CASE IF LOCAL BOT ISN'T RUNNING ON UNIX SYSTEM
+    if(platform.uname()[0] != "Linux"):
+        try:
+            #Thread(target=bot.run,args=(local,)).start()
+            key = base64.encodestring(bytes(sys.argv[2], encoding="UTF-8"))
+            decryptedHost = base64.decodestring(xor_strings(bytes(local0010Encrypted, encoding="UTF-8"), key)).decode("UTF-8")
 
-        Thread(target=bot.run,args=(decryptedHost,)).start()
-        decryptedHost = 0
-        Thread(target=host_HTTP).start()
-        loopish = asyncio.get_event_loop()
-    except:
-        print ("Error: unable to start thread")
-
+            Thread(target=bot.run,args=(decryptedHost,)).start()
+            decryptedHost = 0
+            Thread(target=host_HTTP).start()
+            loopish = asyncio.get_event_loop()
+        except:
+            print ("Error: unable to start thread")
+    # TO START LOCAL BOT ON UNIX SYSTEM
+    else:
+        try:
+            Thread(target=host_HTTP).start()
+        except:
+            print ("Error2: unable to start thread")
+        try:
+            loopish = asyncio.get_event_loop()
+        except:
+            print ("Error3: unable to start thread")
+        try:
+            key = base64.encodestring(bytes(sys.argv[2], encoding="UTF-8"))
+            decryptedHost = base64.decodestring(xor_strings(bytes(local0010Encrypted, encoding="UTF-8"), key)).decode("UTF-8")
+            bot.run(decryptedHost)
+            decryptedHost = 0
+        except:
+            print ("Error1: unable to start thread")
