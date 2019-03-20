@@ -19,7 +19,6 @@ bot.remove_command("help")
 bot_version = "1.00"
 register_list = []
 course_list = []
-
 class course:
     def __init__(self, courseID, channelID, year):
         self.courseID = courseID
@@ -96,7 +95,7 @@ async def report(ctx, member:discord.User = None):
 
 @bot.event
 async def on_raw_reaction_add(payload):
-    if(payload.message_id == 557509716671070213):
+    if(payload.message_id == 557839620834852915):
         member = bot.get_user(payload.user_id)
         if(str(payload.emoji) == "✅"):
             secret = secrets.token_urlsafe(32)
