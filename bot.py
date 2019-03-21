@@ -102,7 +102,7 @@ async def report(ctx, member:discord.User = None):
 
 @bot.event
 async def on_raw_reaction_add(payload):
-    if(payload.message_id == 557839620834852915):
+    if(payload.message_id == 558226835599785984):
         member = bot.get_user(payload.user_id)
         if(str(payload.emoji) == "✅"):
             secret = secrets.token_urlsafe(32)
