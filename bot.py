@@ -264,10 +264,10 @@ async def register_ladok(user):
     print("Aktuella kurser:")
     for element in current:
         courseID = element.find_element_by_xpath("./div/h4/ladok-kurslink/div[2]/a")
-        courseID = course.get_attribute('textContent')
-        courseID = course.split("|")
-        courseID = course[2]
-        courseID = course[1:7]
+        courseID = courseID.get_attribute('textContent')
+        courseID = courseID.split("|")
+        courseID = courseID[2]
+        courseID = courseID[1:7]
         print(course)
         for course in course_list:
             if(course.get_courseID()==courseID):
