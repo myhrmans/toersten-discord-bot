@@ -332,7 +332,7 @@ async def register_ladok(user):
     role_disc = guild.get_role(role)
     member_guild = guild.get_member(member.id)
     print(type(member_guild))
-    await memeber.add_roles(role_disc)
+    await member_guild.add_roles(role_disc)
     await member_guild.edit(nick=fullname)
                 
 @bot.command()
