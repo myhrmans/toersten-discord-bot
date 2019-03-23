@@ -367,9 +367,18 @@ async def nickname(ctx, member:discord.User = None):
     print(type(member))
     await member.edit(nick=name)
     
+@bot.command()
+async def help(ctx):
+    
+    try:
+        File = open("./README.md", "r+", encoding="UTF-8")
+        helpFile = File.read()
+        helpFileList = helpFile.split(sep="## Commands")
+        commands = helpFileList[1].split("##")[0]
+        await ctx.channel.send(f"``` \n ## Commands \n {commands} \n ```")
+    except:
+        await ctx.channel.send(f"Error: Cant find README.md, contact admins!")
 
-local = "NTU2MDE3MzUzNTQwNzYzNjU5.D2znBw.0NOi0JUtvV8GmrprO9F7RzTFrFU"
-master = "NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30"
 course_file = open("courses/courses.txt", "r")
 year=-1
 
