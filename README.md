@@ -34,7 +34,7 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 ## Commands
 | Command | Description |
 |---------|-------------|
-| 7: ping | Check latency |
+| 7: ping | Check real-time latency |
 | 7: version | Check bot version |
 | 7: courses | Returns course attendance from Blackboard |
 | 7: report | To report a bug or issue to admins |
