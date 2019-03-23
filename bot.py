@@ -308,18 +308,19 @@ async def register_ladok(user):
     lastname = fullname[0]
     fullname = firstname + " " + lastname
     await member.send(f"Om du angivet dina uppgifter rätt {fullname} kommer här kommer dina kurser, dessa har du även tillgång till nu:")
-    topyear=1
+    topyear = 1
     for course in course_list:
             discord_courseID = course.get_courseID()
             for courseID in course_list_ladok:
                 if(discord_courseID==courseID):
-                    course_year=course.get_year()
+                    course_year=int(course.get_year())
                     if(course_year>topyear):
                         topyear=course_year
                     channel = bot.get_channel(int(course.get_channelID()))
                     await channel.set_permissions(member, read_messages=True,
                                                         send_messages=True)
-                #await member.send(f"{courseID}")
+    for courseID in course_list_ladok:
+        await member.send(f"{courseID}")
     years = {
         1: 549996194898771978,
         2: 549996363400740866,
@@ -331,7 +332,6 @@ async def register_ladok(user):
     guild = bot.get_guild(547454095360000011)
     role_disc = guild.get_role(role)
     member_guild = guild.get_member(member.id)
-    print(type(member_guild))
     await member_guild.add_roles(role_disc)
     await member_guild.edit(nick=fullname)
                 
