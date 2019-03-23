@@ -322,15 +322,15 @@ async def register_ladok(user):
     for courseID in course_list_ladok:
         await member.send(f"{courseID}")
     years = {
-        1: 549996194898771978,
-        2: 549996363400740866,
-        3: 549996416882442270,
-        4: 553999707689451532,
-        5: 553999955228884993,
+        1: "549996194898771978",
+        2: "549996363400740866",
+        3: "549996416882442270",
+        4: "553999707689451532",
+        5: "553999955228884993",
     }
     role = years[topyear]
     guild = bot.get_guild(547454095360000011)
-    role_disc = guild.get_role(role)
+    role_disc = guild.get_role(int(role))
     member_guild = guild.get_member(member.id)
     await member_guild.add_roles(role_disc)
     await member_guild.edit(nick=fullname)
