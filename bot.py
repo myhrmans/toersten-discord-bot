@@ -248,9 +248,9 @@ async def register_ladok(user):
     try:
         element = WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div/form/div/div/div[1]/div/input")))
-        element.send_keys(str(sys.argv[1]))
+        element.send_keys(username)
         passwordField = driver.find_element_by_xpath("/html/body/div[1]/div/div/div/form/div/div/div[2]/div/input")
-        passwordField.send_keys(str(sys.argv[2]))
+        passwordField.send_keys(password)
         driver.find_element_by_xpath("/html/body/div[1]/div/div/div/form/div/div/div[3]/button").click()
     except Exception as e:
         print(e)
