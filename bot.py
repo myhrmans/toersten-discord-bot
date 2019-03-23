@@ -314,8 +314,8 @@ async def register_ladok(user):
             for courseID in course_list_ladok:
                 if(discord_courseID==courseID):
                     course_year=int(course.get_year())
-                    if(course_year>topyear):
-                        topyear=course_year
+                    if(course_year > topyear):
+                        topyear = course_year
                     channel = bot.get_channel(int(course.get_channelID()))
                     await channel.set_permissions(member, read_messages=True,
                                                         send_messages=True)
@@ -328,7 +328,7 @@ async def register_ladok(user):
         4: 553999707689451532,
         5: 553999955228884993,
     }
-    role = years.get(topyear,549996194898771978)
+    role = years[topyear]
     guild = bot.get_guild(547454095360000011)
     role_disc = guild.get_role(role)
     member_guild = guild.get_member(member.id)
