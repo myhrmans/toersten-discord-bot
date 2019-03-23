@@ -20,6 +20,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
+import datetime
 
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
@@ -39,7 +40,7 @@ class course:
     def get_channelID(self):
         return self.channelID
     def get_year(self):
-        return self.channelID
+        return self.year
     
 class user_register:
     def __init__(self, member, ID):
@@ -86,9 +87,13 @@ async def on_ready():
 
 @bot.command()
 async def ping(ctx):
-    ping = bot.latency
-    ping = round(ping * 1000)
-    await ctx.channel.send(f"It took me {ping}ms to drink a beer and reply to this message, SKÅL as we say in swedish!")
+    sent_time = ctx.message.created_at
+    proccess_time = datetime.datetime.utcnow()
+    difference = (proccess_time - sent_time)
+    duration_in_s = difference.total_seconds()
+
+    #await ctx.channel.send(f"{sent_time} and {proccess_time}")
+    await ctx.channel.send(f"It took me {duration_in_s}s to drink a beer and reply to this message, SKÅL as we say in swedish!")
 
 @bot.command()
 async def welcome_message(ctx):
@@ -217,6 +222,7 @@ async def register_ladok(user):
     ID = user.__getattribute__("ID")
     username = user.__getattribute__("username")
     password = user.__getattribute__("password")
+    course_list_ladok = []
     await member.create_dm()
     display = Display(visible=0, size=(800, 400))
     display.start()
@@ -225,80 +231,110 @@ async def register_ladok(user):
     options.add_argument('--disable-extensions')
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
-    options.add_argument('--no-sandbox')
+    options.add_argument('--no-sandbox')    
     try:
         driver = webdriver.Chrome("/usr/lib/chromium-browser/chromedriver", chrome_options=options)
         driver.set_window_size(800,400)
     except Exception as e:
         print(f"Driver Failed: {e}")
     driver.get('https://www.student.ladok.se/student/loggain')
-    driver.find_element_by_link_text('Välj lärosäte / Choose university').click()
+    #driver.find_element_by_link_text('Välj lärosäte / Choose university').click()
     try:
-        search = WebDriverWait(driver, 20).until(
+        choose_learning = WebDriverWait(driver, 40).until(
+            EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div/p[3]/a"))
+        )
+        choose_learning.click()
+    except Exception as e:
+        print(e)
+    try:
+        search = WebDriverWait(driver, 40).until(
             EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div[2]/div[1]/form/div[2]/div[5]")))
         search.click()
     except Exception as e:
         print(e)
     try:
-        element = WebDriverWait(driver, 20).until(
+        element = WebDriverWait(driver, 40).until(
             EC.presence_of_element_located((By.XPATH, "//*[@id='proceed']")))
         element.click()
     except Exception as e:
         print(e)
     try:
-        element = WebDriverWait(driver, 20).until(
+        element = WebDriverWait(driver, 40).until(
             EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div/form/div/div/div[1]/div/input")))
-        element.send_keys(str(sys.argv[1]))
+        element.send_keys(username)
         passwordField = driver.find_element_by_xpath("/html/body/div[1]/div/div/div/form/div/div/div[2]/div/input")
-        passwordField.send_keys(str(sys.argv[2]))
+        passwordField.send_keys(password)
         driver.find_element_by_xpath("/html/body/div[1]/div/div/div/form/div/div/div[3]/button").click()
     except Exception as e:
         print(e)
     try:
-        element = WebDriverWait(driver, 20).until(
+        element = WebDriverWait(driver, 40).until(
             EC.presence_of_element_located((By.XPATH, "/html/body/ladok-applikation/div/main/div/ng-component/ladok-aktuell/div[2]/div[1]/ladok-pagaende-kurser/div[3]/ladok-pagaende-kurser-i-struktur/div/ladok-pagaende-kurslista/div[1]/div/h4/ladok-kurslink/div[2]/a")))
     except Exception as e:
         print(e)
     current = driver.find_elements_by_xpath("/html/body/ladok-applikation/div/main/div/ng-component/ladok-aktuell/div[2]/div[1]/ladok-pagaende-kurser/div[3]/ladok-pagaende-kurser-i-struktur/div/ladok-pagaende-kurslista/div")
     print("--------Kurser Ladok--------")
-    print("Aktuella kurser:")
     for element in current:
-        course = element.find_element_by_xpath("./div/h4/ladok-kurslink/div[2]/a")
-        course = course.get_attribute('textContent')
-        course = course.split("|")
-        course = course[2]
-        course = course[1:7]
-        print(course)
-        for course in course_list:
-            if(course.get_courseID()==course):
-                channel = bot.get_channel(int(course.get_channelID()))
-                await channel.set_permissions(member, read_messages=True,
-                                                      send_messages=True)
-        await member.send(f"{course}")
-    '''  old = driver.find_elements_by_xpath("/html/body/ladok-applikation/div/main/div/ng-component/ladok-aktuell/div[2]/div[3]/ladok-oavslutade-kurser/div[3]/ladok-oavslutade-kurser-i-struktur/div/ladok-kommande-kurslista/div")
-    print("\nOavslutade kurser:")
+        courseID = element.find_element_by_xpath("./div/h4/ladok-kurslink/div[2]/a")
+        courseID = courseID.get_attribute('textContent')
+        courseID = courseID.split("|")
+        courseID = courseID[2]
+        courseID = courseID[1:7]
+        course_list_ladok.append(courseID)
+    fullname = driver.find_element_by_xpath("/html/body/ladok-applikation/div/header/ladok-meny/div/nav[1]/div[2]/div[1]/div/ladok-inloggad-student")
+    fullname = fullname.get_attribute('textContent')
+    old = driver.find_elements_by_xpath("/html/body/ladok-applikation/div/main/div/ng-component/ladok-aktuell/div[2]/div[3]/ladok-oavslutade-kurser/div[3]/ladok-oavslutade-kurser-i-struktur/div/ladok-kommande-kurslista/div")
     for element in old:
         course = element.find_element_by_xpath("./div/h4/ladok-kurslink/div[2]/a")
-        print(course.get_attribute('textContent'))
+        courseID = course.get_attribute('textContent')
+        courseID = courseID.split("|")
+        courseID = courseID[2]
+        courseID = courseID[1:7]
+        course_list_ladok.append(courseID)
     fri = driver.find_elements_by_xpath("/html/body/ladok-applikation/div/main/div/ng-component/ladok-aktuell/div[2]/div[3]/ladok-oavslutade-kurser/div[4]/ladok-kommande-kurslista/div")
-    print("\nFristående kurser:")
     for element in fri:
         course = element.find_element_by_xpath("./div/h4/ladok-kurslink/div[2]/a")
-        print(course.get_attribute('textContent'))
+        courseID = course.get_attribute('textContent')
+        courseID = courseID.split("|")
+        courseID = courseID[2]
+        courseID = courseID[1:7]
     driver.quit()
     display.stop()
-    await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser, dessa har du även tillgång till nu:")
-    for l in courses:
-        courseID = l.text.split("HP")
-        courseID = courseID[1]
-        courseID = courseID[1:7]
-        for course in course_list:
-            if(course.get_courseID()==courseID):
-                channel = bot.get_channel(int(course.get_channelID()))
-                await channel.set_permissions(member, read_messages=True,
-                                                      send_messages=True)
+    fullname = fullname.split("|")
+    fullname = fullname[0]
+    fullname = fullname.split(",")
+    firstname = fullname[1]
+    firstname = firstname[1:-2]
+    lastname = fullname[0]
+    fullname = firstname + " " + lastname
+    await member.send(f"Om du angivet dina uppgifter rätt {fullname} kommer här kommer dina kurser, dessa har du även tillgång till nu:")
+    topyear = 1
+    for course in course_list:
+            discord_courseID = course.get_courseID()
+            for courseID in course_list_ladok:
+                if(discord_courseID==courseID):
+                    course_year=int(course.get_year())
+                    if(course_year > topyear):
+                        topyear = course_year
+                    channel = bot.get_channel(int(course.get_channelID()))
+                    await channel.set_permissions(member, read_messages=True,
+                                                        send_messages=True)
+    for courseID in course_list_ladok:
         await member.send(f"{courseID}")
-    '''
+    years = {
+        1: "549996194898771978",
+        2: "549996363400740866",
+        3: "549996416882442270",
+        4: "553999707689451532",
+        5: "553999955228884993",
+    }
+    role = years[topyear]
+    guild = bot.get_guild(547454095360000011)
+    role_disc = guild.get_role(int(role))
+    member_guild = guild.get_member(member.id)
+    await member_guild.add_roles(role_disc)
+    await member_guild.edit(nick=fullname)
+                
 @bot.command()
 async def nickname(ctx, member:discord.User = None):
     member = ctx.message.author
@@ -328,6 +364,7 @@ async def nickname(ctx, member:discord.User = None):
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer ditt namn:")
     #for l in name:
     await member.send(f"Hej {name}.")
+    print(type(member))
     await member.edit(nick=name)
     
 @bot.command()
@@ -366,7 +403,7 @@ for line in course_file:
         line = line.split(" ")
         if(line[0]=="ÅR"):
             year=line[1]
-        course_list.append(course(line[0],line[1],year))
+        course_list.append(course(line[0],line[1],int(year)))
 #--------- TO START MASTER BOT --------------
 if(platform.uname()[1]=="raspberrypi"):
     try:
