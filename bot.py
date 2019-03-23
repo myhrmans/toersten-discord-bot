@@ -268,7 +268,6 @@ async def register_ladok(user):
         courseID = courseID.split("|")
         courseID = courseID[2]
         courseID = courseID[1:7]
-        print(course)
         for course in course_list:
             if(course.get_courseID()==courseID):
                 channel = bot.get_channel(int(course.get_channelID()))
