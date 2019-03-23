@@ -263,18 +263,18 @@ async def register_ladok(user):
     print("--------Kurser Ladok--------")
     print("Aktuella kurser:")
     for element in current:
-        course = element.find_element_by_xpath("./div/h4/ladok-kurslink/div[2]/a")
-        course = course.get_attribute('textContent')
-        course = course.split("|")
-        course = course[2]
-        course = course[1:7]
+        courseID = element.find_element_by_xpath("./div/h4/ladok-kurslink/div[2]/a")
+        courseID = course.get_attribute('textContent')
+        courseID = course.split("|")
+        courseID = course[2]
+        courseID = course[1:7]
         print(course)
         for course in course_list:
-            if(course.get_courseID()==course):
+            if(course.get_courseID()==courseID):
                 channel = bot.get_channel(int(course.get_channelID()))
                 await channel.set_permissions(member, read_messages=True,
                                                       send_messages=True)
-        await member.send(f"{course}")
+        await member.send(f"{courseID}")
     '''  old = driver.find_elements_by_xpath("/html/body/ladok-applikation/div/main/div/ng-component/ladok-aktuell/div[2]/div[3]/ladok-oavslutade-kurser/div[3]/ladok-oavslutade-kurser-i-struktur/div/ladok-kommande-kurslista/div")
     print("\nOavslutade kurser:")
     for element in old:
