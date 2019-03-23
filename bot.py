@@ -40,7 +40,7 @@ class course:
     def get_channelID(self):
         return self.channelID
     def get_year(self):
-        return self.channelID
+        return self.year
     
 class user_register:
     def __init__(self, member, ID):
