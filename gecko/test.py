@@ -7,8 +7,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 import time
 import sys
-#cap = DesiredCapabilities().FIREFOX
-#cap["marionette"] = False
 start = time.time()
 display = Display(visible=0, size=(800, 400))
 display.start()
@@ -56,8 +54,10 @@ current = driver.find_elements_by_xpath("/html/body/ladok-applikation/div/main/d
 print("--------Kurser Ladok--------")
 print("Aktuella kurser:")
 for element in current:
-    course = element.find_element_by_xpath("./div/h4/ladok-kurslink/div[2]/a")
-    print(course.get_attribute('textContent'))
+        course = element.find_element_by_xpath("./div/h4/ladok-kurslink/div[2]/a")
+        course = course.get_attribute('textContent')
+        course = course.split("|")
+        print(course[2])
 old = driver.find_elements_by_xpath("/html/body/ladok-applikation/div/main/div/ng-component/ladok-aktuell/div[2]/div[3]/ladok-oavslutade-kurser/div[3]/ladok-oavslutade-kurser-i-struktur/div/ladok-kommande-kurslista/div")
 print("\nOavslutade kurser:")
 for element in old:

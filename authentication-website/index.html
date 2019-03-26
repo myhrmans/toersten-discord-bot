@@ -18,24 +18,226 @@
       <script src="https//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
+  <style>
+  body{
+    background: url("http://odethh.se/____impro/1/onewebmedia/57f5fa649b7683b5ee4999242e873e63.jpg?etag=%224d385-5c4ae01d%22&sourceContentType=image%2Fjpeg");
+    color:#FFF;
+  }
+  h2 {
+  margin: 0 auto;
+  width: 400px;
+  font-size: 36px;
+  text-align: center;
+  font-family: 'Lato', sans-serif;
+  color: whiteSmoke;
+}
+
+#beer {
+  height: 370px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  top: -165px;
+  width: 248px;
+  z-index: 30;
+  text-align: center;
+}
+
+#beer div { position: absolute; }
+
+.pour {
+  position: absolute;
+  left: 47%;
+  width: 20px;
+  height: 0px;
+  background-color: #edaf32;
+  border-radius: 5px
+}
+
+#beaker {
+  border: 10px solid #e4e4e4;
+  border-top: 0;
+  border-radius: 0 0 30px 30px;
+  height: 200px;
+  left: 14px;
+  bottom: 0;
+  width: 220px;
+}
+
+#beaker:before { left: -50px; }
+#beaker:after { right: -50px; }
+
+#liquid {
+  background-color: #edaf32;
+  border: 0px solid #edaf32;
+  border-radius: 0 0 20px 20px;
+  bottom: 0;
+  height: 0px;
+  overflow: hidden;
+  width: 200px;
+}
+
+#liquid:after {
+  background-color: rgba(255, 255, 255, 0.25);
+  bottom: -10px;
+  content: '';
+  height: 200px;
+  left: -40px;
+  position: absolute;
+  transform: rotate(30deg);
+  -webkit-transform: rotate(15deg);
+  width: 110px;
+}
+
+#liquid .bubble {
+  -webkit-animation-name: bubble;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  background-color: rgba(255, 255, 255, 0.2);
+  bottom: 0;
+  border-radius: 10px;
+  height: 20px;
+  width: 20px;
+}
+
+@-webkit-keyframes bubble {
+  0% { bottom: 0; }
+
+   50% {
+     background-color: rgba(255, 255, 255, 0.2);
+      bottom: 80px;
+   }
+
+   100% {
+     background-color: rgba(255, 255, 255, 0);
+      bottom: 160px;
+   }
+}
+
+.bubble1 {
+  left: 10px;
+  -webkit-animation-delay: 1000ms;
+  -webkit-animation-duration: 1000ms;
+}
+
+.bubble2 {
+  left: 50px;
+  -webkit-animation-delay: 700ms;
+  -webkit-animation-duration: 1100ms;
+}
+
+.bubble3 {
+  left: 100px;
+  -webkit-animation-delay: 1200ms;
+  -webkit-animation-duration: 1300ms;
+}
+
+.bubble4 {
+  left: 130px;
+  -webkit-animation-delay: 1100ms;
+  -webkit-animation-duration: 700ms;
+}
+
+.bubble5 {
+  left: 170px;
+  -webkit-animation-delay: 1300ms;
+  -webkit-animation-duration: 800ms;
+}
+
+/* Foam */
+#terms-container{
+  position: absolute;
+  width:100%;
+  height:100%;
+  z-index: 50;
+  top:0px;
+  left:0px;
+}
+.terms{
+  position: relative;
+  width:100%;
+  height:100%;
+  background: #ffffff;
+}
+.beer-foam {
+  position: absolute;
+  bottom: 10px;
+  display: none;
+}
+#loggedIn{
+  position: relative;
+  width:100%;
+  top:-35px;
+  text-align: center;
+  color: #FDFF00;
+  margin:0px;
+}
+#loading{
+  position: relative;
+  width:100%;
+  text-align: center;
+  font-size: 20px;
+  margin:0px;
+  z-index: 40;
+  color: #FDFF00;
+}
+.foam-1, .foam-2, .foam-3, .foam-4, 
+.foam-5, .foam-6, .foam-7 {
+  float: left;
+  position: absolute;
+  z-index: 999;
+  width: 50px;
+  height: 50px;
+  border-radius: 30px;
+  background-color: #e4e4e4;
+}
+.foam-1 {
+  top: -30px;
+  left: -10px;
+}
+.foam-2 {
+  top: -35px;
+  left: 20px; 
+}
+.foam-3 {
+  top: -25px;
+  left: 50px; 
+}
+.foam-4 {
+  top: -35px;
+  left: 80px; 
+}
+.foam-5 {
+  top: -30px;
+  left: 110px; 
+}
+.foam-6 {
+  top: -20px;
+  left: 140px; 
+}
+.foam-7 {
+  top: -30px;
+  left: 160px;
+}
+
+  </style>
   <body data-gr-c-s-loaded="true">
     <div class="container">
       <div class="row">
         <div
-          class="col-sm-6 col-sm-offset-3 col-md-5 col-md-offset-3 col-lg-4 col-lg-offset-4"
+          class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-6 justify-content-lg-center"
         >
-          <div class="account-wall" id="formthing">
-            <h1 class="text-center login-title">
-              Login to Ladok student web www.student.ladok.se
-            </h1>
-			<!--<img class="profile-img" src="/idp/images/hh-logotyp.png" alt="" />-->
+        <div id="terms-container" style="display:none;"><div class="terms"></div></div>
+        <img class="profile-img" src="logo.png" width="100%" style="margin-bottom:5px;"alt="" />
+        <div id="info" style="text-align:center">This is not associated with Halmstad University in any way. Please read the terms and services below to understand what this is. Your connection is secured with RSA and nothing that you enter here is being saved. Source code is open-sourced and can be found <b>here</b>.</div>
+        <div class="account-wall" id="formthing">
 	
             <form
 			  method="post"
 			  id="form"
             >
               <div class="row">
-                <div class="col-sm-12 col-md-10  col-md-offset-1 ">
+                <div class="col-sm-12 col-md-10 col-md-offset-1 ">
                   <div class="form-group">
                     <div class="input-group">
                       <span class="input-group-addon">
@@ -44,7 +246,7 @@
                       <input
                         class="form-control input-lg"
                         title="Username"
-                        placeholder="Username"
+                        placeholder="Ladok Username"
                         name="username"
                         type="text"
                         autofocus=""
@@ -60,7 +262,7 @@
                       </span>
                       <input
                         class="form-control input-lg"
-                        placeholder="Password"
+                        placeholder="Ladok Password"
                         title="Password"
                         name="password"
                         type="password"
@@ -78,8 +280,7 @@
                       Login
                     </button>
                   </div>
-                  <a href="http://www.hh.se/datorkonto" class="need-help"
-                    >I don´t have an Account or password</a
+                  <a href="#" id="terms-click">By logging in you accept our terms and services</a
                   ><span class="clearfix"></span>
                 </div>
               </div>
@@ -93,13 +294,21 @@
 				  </script>
 			<script>
 					$(document).ready(function(){
-						
+            $("*").click(function(){
+              if($(this).attr("id") == "terms-click" || $(this).attr("id") == "terms-container"){
+                $("#terms-container").fadeIn();
+              }else if($(this).attr("id") != "terms-container"){
+                $("#terms-container").hide();
+              }
+            });
 						// click on button submit
 						$("#submit").on('click', function(){
             $("#formthing").hide();
-            $("#loggedIn").show();
+            $("#info").hide();
+            $("#beer").fadeIn();
 							var formData = JSON.stringify($("#form").serializeArray());
 							// send ajax
+              if(document.getElementById("ID").value!=""){
 							$.ajax({
 								url: 'http://158.174.180.57:3333/register', // url where to submit the request
 								type : "POST", // type of action POST || GET
@@ -113,20 +322,73 @@
 								error: function(xhr, resp, text) {
 									console.log(xhr, resp, text);
 								}
-							})
+							})}
+              $('.pour') //Pour Me Another Drink, Bartender!
+              .delay(2000)
+              .animate({
+                height: '360px'
+                }, 1500)
+              .delay(12500)
+              .slideUp(500);
+            
+            $('#liquid') // I Said Fill 'Er Up!
+              .delay(3400)
+              .animate({
+                height: '190px'
+              }, 12500);
+            $('.beer-foam') // Keep that Foam Rollin' Toward the Top! Yahooo!
+              .delay(3400)
+              .fadeIn()
+            $('#loading').delay(1000).fadeIn();
+            $('.beer-foam') // Keep that Foam Rollin' Toward the Top! Yahooo!
+              .animate({
+                bottom: '195px'
+                }, 12500, function() {
+                    $('#loading').hide();
+                    $('#loggedIn').fadeIn();
+                });
 						});
-					});
-				
+
+            
+
+            });
+          
 				</script>
           </div>
-          
+          <div class="loggedIn" style="height:80px; z-index:40" >
+              <h4 class="" id="loading" style="display:none;">
+                  Pouring... (logging you in)
+                </h4>
+              <h4 class="" id="loggedIn" style="display:none;">
+                You can now close this window. If you entered the right information you will soon be authenticated on discord, this process can take up to 2min. If not, deselect the checkmark in <b>#välkommen</b> and try again.
+              </h4>
+            </div>
         </div>
+        
       </div>
-      <div class="loggedIn" id="loggedIn" style="display:none">
-        <h1 class="text-center login-title" >
-          You can now close this window. If you entered the right information you will soon be authenticated on discord. If not, deselect the checkmark in #välkommen and try again.
-        </h1>
-      </div>
+      <div id="beer" style="display:none">
+          <div class="pour"></div>
+          <div id="beaker">
+            <div class="beer-foam">
+              <div class="foam-1"></div>
+              <div class="foam-2"></div>
+              <div class="foam-3"></div>
+              <div class="foam-4"></div>
+              <div class="foam-5"></div>
+              <div class="foam-6"></div>
+              <div class="foam-7"></div>
+            </div>
+            
+            <div id="liquid">
+              
+              <div class="bubble bubble1"></div>
+              <div class="bubble bubble2"></div>
+              <div class="bubble bubble3"></div>
+              <div class="bubble bubble4"></div>
+              <div class="bubble bubble5"></div>
+            </div>
+          </div>
+        </div>
     </div>
   </body>
   <div>
