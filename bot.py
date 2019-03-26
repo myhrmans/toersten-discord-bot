@@ -21,6 +21,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 import datetime
+import ssl
 
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
@@ -78,7 +79,11 @@ class listen_for_request(BaseHTTPRequestHandler):
 def host_HTTP():
     print("started http")
     httpd = socketserver.TCPServer(("", 3333), listen_for_request)
+    httpd.socket = ssl.wrap_socket (httpd.socket, 
+        keyfile="/home/pi/key.pem", 
+        certfile='/home/pi/cert.pem', server_side=True)
     httpd.serve_forever()
+    
 @bot.event
 async def on_ready():
     print("Ready to go!")
