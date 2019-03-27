@@ -14,15 +14,11 @@ import sys
 from itertools import cycle
 import base64
 from pyvirtualdisplay import Display
-from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.options import Options
 import datetime
 import ssl
 import re
+from arsenic import get_session, keys, browsers, services
+
 
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
@@ -75,14 +71,14 @@ class listen_for_request(BaseHTTPRequestHandler):
             if(user.user_id()==id['value']):
                 user.set_user(username['value'])
                 user.set_password(password['value'])
-                result = loopish.run_until_complete(register_ladok(user))              # Start a worker processes.
+                result = loopish.run_until_complete(hello_world(user))              # Start a worker processes.
         #self._set_headers()
 def host_HTTP():
     print("started http")
     httpd = socketserver.TCPServer(("", 3333), listen_for_request)
-    httpd.socket = ssl.wrap_socket (httpd.socket, 
-        keyfile="/home/pi/key.pem", 
-        certfile='/home/pi/cert.pem', server_side=True)
+    #httpd.socket = ssl.wrap_socket (httpd.socket, 
+    #    keyfile="/home/pi/key.pem", 
+    #    certfile='/home/pi/cert.pem', server_side=True)
     httpd.serve_forever()
     
 @bot.event
@@ -189,7 +185,7 @@ async def courses(ctx, member:discord.User = None):
     await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
     for l in courses:
         await member.send(f"{l.text}")
-        
+    
 async def register(user):
     print("Register")
     member = user.get_member()
@@ -222,7 +218,100 @@ async def register(user):
                                                       send_messages=True)
         await member.send(f"{courseID}")
 
-async def register_ladok(user):
+async def hello_world(user):
+    display = Display(visible=0, size=(800, 400))
+    display.start()
+    member = user.get_member()
+    ID = user.__getattribute__("ID")
+    username = user.__getattribute__("username")
+    username = str(username)
+    password = user.__getattribute__("password")
+    password = str(password)
+    course_list_ladok = []
+    await member.create_dm()
+    service = services.Chromedriver(binary="/usr/lib/chrome-browser/chromedriver")
+    browser = browsers.Chrome()
+    async with get_session(service, browser) as session:
+        session.set_window_size(350,200)
+        await session.get('https://www.student.ladok.se/student/loggain')
+        chooseSite = await session.wait_for_element(10, 'p:nth-child(5) > a')
+        await chooseSite.click()
+        halmstad = await session.wait_for_element(10, '#searchlist > div:nth-child(5)')
+        await halmstad.click()
+        proceed_to_login = await session.wait_for_element(10, '#proceed')
+        await proceed_to_login.click()
+        username_element = await session.wait_for_element(10, 'body > div > div > div > div > form > div > div > div:nth-child(1) > div > input')
+        await member.send(f"{username}")
+        print(username)
+        await username_element.send_keys(username)
+        password = await session.get_element('body > div > div > div > div > form > div > div > div:nth-child(2) > div > input')
+        await password.send_keys(password)
+        login = await session.get_element('body > div > div > div > div > form > div > div > div:nth-child(3) > button')
+        await login.click()
+        real_name = await session.wait_for_element(10, '#navigation-first-meny > div.ldk-visa-desktop.ml-auto > div > ladok-inloggad-student')
+        name = await real_name.get_text()
+        current = await session.get_elements('#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
+        for element in current:
+            element = await element.get_element('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+            element_text = await element.get_text()
+            courseID = element_text.split("|")
+            courseID = courseID[2]
+            courseID = courseID[1:7]
+            course_list_ladok.append(courseID) #ADD TO COURSE HERE
+        uncompleted = await session.get_elements('#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > ladok-oavslutade-kurser-i-struktur > div > ladok-kommande-kurslista > div')
+        for element in uncompleted:
+            element = await element.get_element('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+            element_text = await element.get_text()
+            courseID = element_text.split("|")
+            courseID = courseID[2]
+            courseID = courseID[1:7]
+            course_list_ladok.append(courseID) #ADD TO COURSE HERE
+        self_contained_courses = await session.get_elements('#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(4) > ladok-kommande-kurslista > div')
+        for element in self_contained_courses:
+            element = await element.get_element('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+            element_text = await element.get_text()
+            courseID = element_text.split("|")
+            courseID = courseID[2]
+            courseID = courseID[1:7]
+            course_list_ladok.append(courseID) #ADD TO COURSE HERE
+        fullname = name.split("|")
+        fullname = fullname[0]
+        fullname = fullname.split(",")
+        firstname = fullname[1]
+        firstname = firstname[1:-1]
+        lastname = fullname[0]
+        fullname = firstname + " " + lastname
+        print(fullname) # FULLNAME HERE
+        await session.close()
+    await member.send(f"Om du angivet dina uppgifter rätt {fullname} kommer här kommer dina kurser, dessa har du även tillgång till nu:")
+    topyear = 1
+    for course in course_list:
+            discord_courseID = course.get_courseID()
+            for courseID in course_list_ladok:
+                if(discord_courseID==courseID):
+                    course_year=int(course.get_year())
+                    if(course_year > topyear):
+                        topyear = course_year
+                    channel = bot.get_channel(int(course.get_channelID()))
+                    await channel.set_permissions(member, read_messages=True,
+                                                        send_messages=True)
+    for courseID in course_list_ladok:
+        await member.send(f"{courseID}")
+    years = {
+        1: "549996194898771978",
+        2: "549996363400740866",
+        3: "549996416882442270",
+        4: "553999707689451532",
+        5: "553999955228884993",
+    }
+    role = years[topyear]
+    guild = bot.get_guild(547454095360000011)
+    role_disc = guild.get_role(int(role))
+    member_guild = guild.get_member(member.id)
+    await member_guild.add_roles(role_disc)
+    await member_guild.edit(nick=fullname)
+
+'''async def register_ladok(user):
     print("Register")
     member = user.get_member()
     ID = user.__getattribute__("ID")
@@ -339,8 +428,7 @@ async def register_ladok(user):
     role_disc = guild.get_role(int(role))
     member_guild = guild.get_member(member.id)
     await member_guild.add_roles(role_disc)
-    await member_guild.edit(nick=fullname)
-                
+    await member_guild.edit(nick=fullname)'''             
 @bot.command()
 async def nickname(ctx, member:discord.User = None):
     member = ctx.message.author
