@@ -227,10 +227,10 @@ async def hello_world(user):
     password = str(password)
     course_list_ladok = []
     await member.create_dm()
-    service = services.Chromedriver(binary="/usr/lib/chrome-browser/chromedriver")
-    browser = browsers.Chrome(chromeOptions={'args': ['--headless', '--disable-gpu','--no-sandbox','--disable-extensions']})
+    service = services.Chromedriver()
+    browser = browsers.Chrome(chromeOptions={'args': ['--no-sandbox','--headless', '--disable-gpu','--disable-extensions','--disable-dev-shm-usage','--window-size=1200,1200']})
     async with get_session(service, browser) as session:
-        session.set_window_size(350,200)
+        await session.set_window_size(1200,1200)
         await session.get('https://www.student.ladok.se/student/loggain')
         chooseSite = await session.wait_for_element(10, 'p:nth-child(5) > a')
         await chooseSite.click()
@@ -459,9 +459,18 @@ async def nickname(ctx, member:discord.User = None):
     print(type(member))
     await member.edit(nick=name)
     
+@bot.command()
+async def help(ctx):
+    
+    try:
+        File = open("./README.md", "r+", encoding="UTF-8")
+        helpFile = File.read()
+        helpFileList = helpFile.split(sep="## Commands")
+        commands = helpFileList[1].split("##")[0]
+        await ctx.channel.send(f"``` \n ## Commands \n {commands} \n ```")
+    except:
+        await ctx.channel.send(f"Error: Cant find README.md, contact admins!")
 
-local = "NTU2MDE3MzUzNTQwNzYzNjU5.D2znBw.0NOi0JUtvV8GmrprO9F7RzTFrFU"
-master = "NTU0NjQ5MTM2ODU1NjQ2MjQ5.D2fs0Q.YV3dm7riiVMxI36VENnjlvGlg30"
 course_file = open("courses/courses.txt", "r")
 year=-1
 
