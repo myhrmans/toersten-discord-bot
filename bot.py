@@ -228,7 +228,7 @@ async def hello_world(user):
     course_list_ladok = []
     await member.create_dm()
     service = services.Chromedriver(binary="/usr/lib/chrome-browser/chromedriver")
-    browser = browsers.Chrome()
+    browser = browsers.Chrome(chromeOptions={'args': ['--headless', '--disable-gpu','--no-sandbox','--disable-extensions']})
     async with get_session(service, browser) as session:
         session.set_window_size(350,200)
         await session.get('https://www.student.ladok.se/student/loggain')
