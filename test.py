@@ -12,7 +12,7 @@ def addTodo(itemToAdd):
         matchesTodo = re.search(regexTodo, FileInfo, re.DOTALL)
         matchesAfterTodo = re.search(regexAfterTodo, FileInfo, re.DOTALL)
 
-        if matchesBeforeTodo or matchesTodo or matchesAfterTodo:
+        if matchesBeforeTodo and matchesTodo and matchesAfterTodo:
             output = matchesTodo.group().split("\n")
             if not (itemToAdd[0] == " " or itemToAdd[0] == "-"):
                 del output[len(output)-2]

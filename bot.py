@@ -412,7 +412,7 @@ async def addTodo(ctx, member:discord.User = None):
             output = matchesTodo.group().split("\n")                # Split the list to easly add new item
             if not (message[0] == " " or message[0] == "-"):        # Just to check correct format
                 del output[len(output)-2]                           # Deletes a \n in the array, dunno why you have to take the index len(output)-2 to delete it but it wont work otherwise LOL 
-                output.insert(len(output)-1, "- " + itemToAdd)      # Formats the new item for markdown
+                output.insert(len(output)-1, "- " + message)      # Formats the new item for markdown
         
             for todoItem in output:
                 newTodoList = newTodoList + todoItem + "\n"         # Constructs the Todo-list
