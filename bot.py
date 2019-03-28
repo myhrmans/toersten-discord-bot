@@ -16,6 +16,7 @@ import base64
 import datetime
 import ssl
 from pyppeteer import launch
+from subprocess import PIPE, Popen
 
 
 if(platform.uname()[1]=="raspberrypi"):
@@ -71,14 +72,21 @@ class listen_for_request(BaseHTTPRequestHandler):
                 user.set_password(password['value'])
                 result = loopish.run_until_complete(ladok(user))              # Start a worker processes.
         #self._set_headers()
+
 def host_HTTP():
     print("started http")
     httpd = socketserver.TCPServer(("", 3333), listen_for_request)
-    httpd.socket = ssl.wrap_socket (httpd.socket, 
-        keyfile="/home/pi/key.pem", 
-        certfile='/home/pi/cert.pem')
+    #httpd.socket = ssl.wrap_socket (httpd.socket, 
+    #    keyfile="/home/pi/key.pem", 
+    #    certfile='/home/pi/cert.pem', server_side=True)
     httpd.serve_forever()
     
+def get_cpu_temperature():
+    """get cpu temperature using vcgencmd"""
+    process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE)
+    output, _error = process.communicate()
+    return float(output[output.index('=') + 1:output.rindex("'")])
+
 @bot.event
 async def on_ready():
     print("Ready to go!")
@@ -99,6 +107,7 @@ async def ping(ctx):
 async def welcome_message(ctx):
     channel = bot.get_channel(557509634437677056)
     await channel.send("Welcome to ÖDETs Discord channel!\n\nThe main purpose of this channel is for students to discuss courses, exams and labs etc.\nMain language is Swedish but all of the documentation is written in english since there might be x-change students discussing in some of the courses.\nTo use this channel you must first authenticate that you're a student of ÖDET, this by reacting on this message. By authenticating to this channel you accept the following community guidelines:\n\n- No harassment\n- No hate or racism\n- No cheating\n- Keep good tone to each other\n- You need to follow Swedish laws such as 'Diskrimineringslagen'.\n\nWe are all here to help each other and we all want a nice community to discuss our studies, if you can't follow these simple rules you will get banned.\n\n---------------------------------------------------------------------------------------------------------------\n\nCheck the README.md file in the github repository for commands on how to interact with Toersten. If there's any problems, don't hesitate to contact the channel admins! If you want to contribute to the community or with development, feel free to contact us! Especially if you have experience with Python and JavaScript.\n\n//Admins\nP.S Toersten vakar över oss alla, ty han är den allsmäktige!")
+
 @bot.command()
 async def report(ctx, member:discord.User = None):
     member = ctx.message.author
@@ -127,6 +136,7 @@ async def on_raw_reaction_add(payload):
             channel = bot.get_channel(payload.channel_id)
             async for elem in channel.history():
                 await elem.remove_reaction(payload.emoji,member)
+
 @bot.command()
 async def unregister(ctx, member:discord.User = None):
     member = ctx.message.author
@@ -156,10 +166,71 @@ async def on_reaction_add(reaction, user):
         await channel.send(reactionResponses[reaction.emoji])
     #do stuff
 
+@bot.command()
+async def courses(ctx, member:discord.User = None):
+    member = ctx.message.author
+    message = ctx.message
+    def pred(m):
+        return m.author == message.author
+    await member.create_dm()
+    await member.send(f"Ange ditt Blackboard användarnamn (exempel marmyh16):")
+    username = await bot.wait_for('message', check=pred)
+    await member.send(f"Okej {username.content}. Bara ett steg kvar.. ditt lösenord:")
+    password = await bot.wait_for('message', check=pred)
+    browser = mechanicalsoup.browser = mechanicalsoup.StatefulBrowser(
+        soup_config={'features': 'lxml'},
+        raise_on_404=True
+    )
+    login_page = browser.open("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_98_1")
+    login_form = browser.select_form('#loginBoxFull form')
+    browser["user_id"] = username.content
+    browser["password"] = password.content
+    resp = browser.submit_selected()
+    resp2 = browser.post("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction", params='action=refreshAjaxModule&modId=_25_1&tabId=_1_1&tab_tab_group_id=_1_1');
+    courses = resp2.text
+    courses = lxml.html.fromstring(courses)
+    courses = courses.cssselect("a")
+    await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser:")
+    for l in courses:
+        await member.send(f"{l.text}")
+    
+async def register(user):
+    print("Register")
+    member = user.get_member()
+    ID = user.__getattribute__("ID")
+    username = user.__getattribute__("username")
+    password = user.__getattribute__("password")
+    await member.create_dm()
+    browser = mechanicalsoup.browser = mechanicalsoup.StatefulBrowser(
+        soup_config={'features': 'lxml'},
+        raise_on_404=True
+    )
+    login_page = browser.open("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_98_1")
+    login_form = browser.select_form('#loginBoxFull form')
+    browser["user_id"] = username
+    browser["password"] = password
+    resp = browser.submit_selected()
+    resp2 = browser.post("https://hh.blackboard.com/webapps/portal/execute/tabs/tabAction", params='action=refreshAjaxModule&modId=_25_1&tabId=_1_1&tab_tab_group_id=_1_1');
+    courses = resp2.text
+    courses = lxml.html.fromstring(courses)
+    courses = courses.cssselect("a")
+    await member.send(f"Om du angivet dina uppgifter rätt kommer här kommer dina kurser, dessa har du även tillgång till nu:")
+    for l in courses:
+        courseID = l.text.split("HP")
+        courseID = courseID[1]
+        courseID = courseID[1:7]
+        for course in course_list:
+            if(course.get_courseID()==courseID):
+                channel = bot.get_channel(int(course.get_channelID()))
+                await channel.set_permissions(member, read_messages=True,
+                                                      send_messages=True)
+        await member.send(f"{courseID}")
+
 async def ladok(user):
     member = user.get_member()
     ID = user.__getattribute__("ID")
     username = user.__getattribute__("username")
+    print(username)
     username = str(username)
     password = user.__getattribute__("password")
     password = str(password)
@@ -187,41 +258,24 @@ async def ladok(user):
     await page.focus('body > div > div > div > div > form > div > div > div:nth-child(2) > div > input')
     await page.keyboard.type(password)
     await page.click('body > div > div > div > div > form > div > div > div:nth-child(3) > button')
-    try:
-        await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':3000})
-        await member.send("Wrong username or password. Please try again by ")
-        channel = bot.get_channel(557509634437677056)
-        async for elem in channel.history():
-            await elem.remove_reaction("✅",member)
-        await browser.close()
-    except: 
-        await page.waitForSelector('div#navigation-first-meny div > ladok-inloggad-student', options={'timeout':10000})
-        #---- Get name ----#
-        element = await page.querySelector('div#navigation-first-meny div > ladok-inloggad-student')
-        name = await page.evaluate('(element) => element.textContent', element)
-        fullname = name.split("|")
-        fullname = fullname[0]
-        fullname = fullname.split(",")
-        firstname = fullname[1]
-        firstname = firstname[1:-1]
-        lastname = fullname[0]
-        fullname = firstname + " " + lastname
-        print(fullname) #REMOVE
+    await page.waitForSelector('div#navigation-first-meny div > ladok-inloggad-student', options={'timeout':10000})
 
-        #---- Get current courses ----#
-        await page.waitForSelector('#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
-        current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
-        for element in current:
-                element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
-                element_text = await page.evaluate('(element) => element.textContent', element)
-                courseID = element_text.split("|")
-                courseID = courseID[2]
-                courseID = courseID[1:7]
-                course_list_ladok.append(courseID)
+    #---- Get name ----#
+    element = await page.querySelector('div#navigation-first-meny div > ladok-inloggad-student')
+    name = await page.evaluate('(element) => element.textContent', element)
+    fullname = name.split("|")
+    fullname = fullname[0]
+    fullname = fullname.split(",")
+    firstname = fullname[1]
+    firstname = firstname[1:-1]
+    lastname = fullname[0]
+    fullname = firstname + " " + lastname
+    print(fullname) #REMOVE
 
-        #---- Get uncompleted courses ----#
-        uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > ladok-oavslutade-kurser-i-struktur > div > ladok-kommande-kurslista > div')
-        for element in uncompleted:
+    #---- Get current courses ----#
+    await page.waitForSelector('#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
+    current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
+    for element in current:
             element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
             element_text = await page.evaluate('(element) => element.textContent', element)
             courseID = element_text.split("|")
@@ -229,88 +283,61 @@ async def ladok(user):
             courseID = courseID[1:7]
             course_list_ladok.append(courseID)
 
-        #---- Get self-contained courses ----#
-        self_contained_courses = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(4) > ladok-kommande-kurslista > div')
-        for element in self_contained_courses:
-            element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
-            element_text = await page.evaluate('(element) => element.textContent', element)
-            courseID = element_text.split("|")
-            courseID = courseID[2]
-            courseID = courseID[1:7]
-            course_list_ladok.append(courseID)
+    #---- Get uncompleted courses ----#
+    uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > ladok-oavslutade-kurser-i-struktur > div > ladok-kommande-kurslista > div')
+    for element in uncompleted:
+        element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+        element_text = await page.evaluate('(element) => element.textContent', element)
+        courseID = element_text.split("|")
+        courseID = courseID[2]
+        courseID = courseID[1:7]
+        course_list_ladok.append(courseID)
 
-        #---- Close Browser ----#
-        await browser.close()
+    #---- Get self-contained courses ----#
+    self_contained_courses = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(4) > ladok-kommande-kurslista > div')
+    for element in self_contained_courses:
+        element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+        element_text = await page.evaluate('(element) => element.textContent', element)
+        courseID = element_text.split("|")
+        courseID = courseID[2]
+        courseID = courseID[1:7]
+        course_list_ladok.append(courseID)
 
-        #---- Calculate Year and add to channels ----#
-        await member.send(f"Om du angivet dina uppgifter rätt {fullname} kommer här kommer dina kurser, dessa har du även tillgång till nu:")
-        topyear = 0
-        isOdet = 0
-        for course in course_list:
-                discord_courseID = course.get_courseID()
-                for courseID in course_list_ladok:
-                    if(discord_courseID==courseID):
-                        course_year=int(course.get_year())
-                        isOdet=1
-                        if(course_year > topyear):
-                            topyear = course_year
-                        channel = bot.get_channel(int(course.get_channelID()))
-                        await channel.set_permissions(member, read_messages=True,
-                                                            send_messages=True)
-        for courseID in course_list_ladok:
-            await member.send(f"{courseID}")
-        years = {
-            0: "0",
-            1: "549996194898771978",
-            2: "549996363400740866",
-            3: "549996416882442270",
-            4: "553999707689451532",
-            5: "553999955228884993",
-        }
-        role = years[topyear]
-        guild = bot.get_guild(547454095360000011)
-        member_guild = guild.get_member(member.id)
-        if(isOdet==1):
-            role_disc = guild.get_role(int(role))
-            await member_guild.add_roles(role_disc)
-        await member_guild.edit(nick=fullname)
+    #---- Close Browser ----#
+    await browser.close()
 
-@bot.command()
-async def addTodo(ctx, member:discord.User = None):
-    member = ctx.message.author
-    message = ctx.message
-
-    """
-        Uses regex to extract [## Todo] from README.md, then splits the Todo to a list to easly insert e new item.
-        Then rebuilds the README.md file and overwrites the old one.
-    """
-    newTodoList = ""
-    try:
-        File = open("./README.md", "r+", encoding="UTF-8")
-        FileInfo = File.read()
-        regexBeforeTodo = r"(.*)(?=## Todo)"            # Info before Todo
-        regexTodo = r"(?=## Todo)(.*)(?=## Commands)"   # The Todo-list
-        regexAfterTodo = r"(?=## Commands)(.*)"         # After the Todo
-        matchesBeforeTodo = re.search(regexBeforeTodo, FileInfo, re.DOTALL)
-        matchesTodo = re.search(regexTodo, FileInfo, re.DOTALL)
-        matchesAfterTodo = re.search(regexAfterTodo, FileInfo, re.DOTALL)
-
-        if matchesBeforeTodo and matchesTodo and matchesAfterTodo:  # Basically if there is anything in the README.md file
-            output = matchesTodo.group().split("\n")                # Split the list to easly add new item
-            if not (message[0] == " " or message[0] == "-"):        # Just to check correct format
-                del output[len(output)-2]                           # Deletes a \n in the array, dunno why you have to take the index len(output)-2 to delete it but it wont work otherwise LOL 
-                output.insert(len(output)-1, "- " + message)      # Formats the new item for markdown
-        
-            for todoItem in output:
-                newTodoList = newTodoList + todoItem + "\n"         # Constructs the Todo-list
-            
-        File.seek(0)                                                # Set the cursor back to the beginning to overwrite the old file
-        File.write((matchesBeforeTodo.group() + newTodoList + matchesAfterTodo.group())) # Stitch back together the new Todo-list with the old data
-        File.close()
-
-    except:
-        await ctx.channel.send(f"Error, contact admins!")
-        
+    #---- Calculate Year and add to channels ----#
+    await member.send(f"Om du angivet dina uppgifter rätt {fullname} kommer här kommer dina kurser, dessa har du även tillgång till nu:")
+    topyear = 0
+    isOdet = 0
+    for course in course_list:
+            discord_courseID = course.get_courseID()
+            for courseID in course_list_ladok:
+                if(discord_courseID==courseID):
+                    course_year=int(course.get_year())
+                    isOdet=1
+                    if(course_year > topyear):
+                        topyear = course_year
+                    channel = bot.get_channel(int(course.get_channelID()))
+                    await channel.set_permissions(member, read_messages=True,
+                                                        send_messages=True)
+    for courseID in course_list_ladok:
+        await member.send(f"{courseID}")
+    years = {
+        0: "0",
+        1: "549996194898771978",
+        2: "549996363400740866",
+        3: "549996416882442270",
+        4: "553999707689451532",
+        5: "553999955228884993",
+    }
+    role = years[topyear]
+    guild = bot.get_guild(547454095360000011)
+    member_guild = guild.get_member(member.id)
+    if(isOdet==1):
+        role_disc = guild.get_role(int(role))
+        await member_guild.add_roles(role_disc)
+    await member_guild.edit(nick=fullname)
 
 
 @bot.command()
