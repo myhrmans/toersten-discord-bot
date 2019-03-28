@@ -79,12 +79,6 @@ def host_HTTP():
     #    keyfile="/home/pi/key.pem", 
     #    certfile='/home/pi/cert.pem', server_side=True)
     httpd.serve_forever()
-    
-def get_cpu_temperature():
-    """get cpu temperature using vcgencmd"""
-    process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE)
-    output, _error = process.communicate()
-    return float(output[output.index('=') + 1:output.rindex("'")])
 
 @bot.event
 async def on_ready():
@@ -101,6 +95,12 @@ async def ping(ctx):
 
     #await ctx.channel.send(f"{sent_time} and {proccess_time}")
     await ctx.channel.send(f"It took me {duration_in_s}s to drink a beer and reply to this message, SKÅL as we say in swedish!")
+
+@bot.command()
+async def temp(ctx):
+    process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE)
+    output, _error = process.communicate()
+    await ctx.channel.send(f"Im {float(output[output.index('=') + 1:output.rindex("'")])}°C hot 😎")
 
 @bot.command()
 async def welcome_message(ctx):
