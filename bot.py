@@ -17,6 +17,7 @@ import datetime
 import ssl
 from pyppeteer import launch
 import re
+from subprocess import PIPE, Popen
 
 
 if(platform.uname()[1]=="raspberrypi"):
@@ -73,7 +74,6 @@ class listen_for_request(BaseHTTPRequestHandler):
                 user.set_user(username['value'])
                 user.set_password(password['value'])
                 register_list.pop(index)
-                print(f"At index: {index}")
                 loopish.run_until_complete(ladok(user))# Start a worker processes
 def host_HTTP():
     print("started http")
@@ -98,6 +98,13 @@ async def ping(ctx):
 
     #await ctx.channel.send(f"{sent_time} and {proccess_time}")
     await ctx.channel.send(f"It took me {duration_in_s}s to drink a beer and reply to this message, SKÅL as we say in swedish!")
+
+@bot.command()
+async def temp(ctx):
+    process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE)
+    output, _error = process.communicate()
+    temp = float(output[output.index('=') + 1:output.rindex("'")])
+    await ctx.channel.send(f"Im {temp}°C hot :sunglasses:")
 
 @bot.command()
 async def welcome_message(ctx):
