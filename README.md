@@ -28,9 +28,8 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 - Check latency
 - Check version
 - React on certian comments
-- Get course information from Blackboard
+- Get course information from Ladok
 - Bug report with notification to admins
-- Get courseIDs from blackboard
 - Locals bots for development and hosted bot for service
 - Encryted bot IDs
 
@@ -56,4 +55,4 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 - [Martin Myhrman](https://github.com/myhrmans/)
 - [Karl-Johan Djervbrant](https://github.com/kallekj/)
 - [Andreas Häggström](https://github.com/AndreasH96/)
-- [Filip Göranson](https://github.com/filipgoranson/)
+- [Filip Göranson](https://github.com/filipgoranson/)# toersten-discord-bot

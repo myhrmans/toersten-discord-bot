@@ -16,7 +16,9 @@ import base64
 from pyvirtualdisplay import Display
 import datetime
 import ssl
+import re
 from arsenic import get_session, keys, browsers, services
+
 
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
@@ -469,10 +471,47 @@ async def help(ctx):
         commands = helpFileList[1].split("##")[0]
         await ctx.channel.send(f"``` \n ## Commands \n {commands} \n ```")
     except:
-        await ctx.channel.send(f"Error: Cant find README.md, contact admins!")
+        await ctx.channel.send(f"Error, contact admins!")
 
 course_file = open("courses/courses.txt", "r")
 year=-1
+
+@bot.command()
+async def addTodo(ctx, member:discord.User = None):
+    member = ctx.message.author
+    message = ctx.message
+
+    """
+        Uses regex to extract [## Todo] from README.md, then splits the Todo to a list to easly insert e new item.
+        Then rebuilds the README.md file and overwrites the old one.
+    """
+    newTodoList = ""
+    try:
+        File = open("./README.md", "r+", encoding="UTF-8")
+        FileInfo = File.read()
+        regexBeforeTodo = r"(.*)(?=## Todo)"            # Info before Todo
+        regexTodo = r"(?=## Todo)(.*)(?=## Commands)"   # The Todo-list
+        regexAfterTodo = r"(?=## Commands)(.*)"         # After the Todo
+        matchesBeforeTodo = re.search(regexBeforeTodo, FileInfo, re.DOTALL)
+        matchesTodo = re.search(regexTodo, FileInfo, re.DOTALL)
+        matchesAfterTodo = re.search(regexAfterTodo, FileInfo, re.DOTALL)
+
+        if matchesBeforeTodo and matchesTodo and matchesAfterTodo:  # Basically if there is anything in the README.md file
+            output = matchesTodo.group().split("\n")                # Split the list to easly add new item
+            if not (message[0] == " " or message[0] == "-"):        # Just to check correct format
+                del output[len(output)-2]                           # Deletes a \n in the array, dunno why you have to take the index len(output)-2 to delete it but it wont work otherwise LOL 
+                output.insert(len(output)-1, "- " + message)      # Formats the new item for markdown
+        
+            for todoItem in output:
+                newTodoList = newTodoList + todoItem + "\n"         # Constructs the Todo-list
+            
+        File.seek(0)                                                # Set the cursor back to the beginning to overwrite the old file
+        File.write((matchesBeforeTodo.group() + newTodoList + matchesAfterTodo.group())) # Stitch back together the new Todo-list with the old data
+        File.close()
+
+    except:
+        await ctx.channel.send(f"Error, contact admins!")
+        
 
 """ ------------------------------- Encryption -------------------------------"""
 local0001Encrypted = "6+k<\x14gN=\x192=`X%4@>\x01'95\x18_<d^0\x08o/hd;\x13\x1c\x10\x19\x03@\x12\x1d@_\x1e\x0e\x19.5\x0e&\x05P\x01\x11\x00\x05\x0e\x11-\t\x19\x00!g[\x0c#K;\r\r#-\x05\x06 :k\t,\x04`"
