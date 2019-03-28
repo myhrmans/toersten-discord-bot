@@ -67,7 +67,7 @@ class listen_for_request(BaseHTTPRequestHandler):
         password=x[1]
         id=x[2]
         print(len(register_list))
-        for user,index in enumerate(register_list):
+        for index,user in enumerate(register_list):
             if(user.user_id()==id['value']):
                 user.set_user(username['value'])
                 user.set_password(password['value'])
