@@ -66,12 +66,16 @@ class listen_for_request(BaseHTTPRequestHandler):
         username=x[0]
         password=x[1]
         id=x[2]
+        print(len(register_list))
         for user in register_list:
             if(user.user_id()==id['value']):
                 user.set_user(username['value'])
                 user.set_password(password['value'])
                 loopish.run_until_complete(ladok(user))# Start a worker processes
-                register_list.remove(user)
+                try:
+                    register_list.remove(user)
+                except Exception as e:
+                    print(e)
 def host_HTTP():
     print("started http")
     httpd = socketserver.TCPServer(("", 3333), listen_for_request)
@@ -190,7 +194,7 @@ async def ladok(user):
     await page.click('body > div > div > div > div > form > div > div > div:nth-child(3) > button')
     try:
         await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':3000})
-        await member.send("Wrong username or password. Please try again by ")
+        await member.send("Wrong username or password. Please try again by going into #välkommen")
         channel = bot.get_channel(557509634437677056)
         async for elem in channel.history():
             await elem.remove_reaction("✅",member)
