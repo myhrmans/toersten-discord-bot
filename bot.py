@@ -17,6 +17,7 @@ import datetime
 import ssl
 from pyppeteer import launch
 import re
+from subprocess import PIPE, Popen
 
 
 if(platform.uname()[1]=="raspberrypi"):
@@ -97,6 +98,13 @@ async def ping(ctx):
 
     #await ctx.channel.send(f"{sent_time} and {proccess_time}")
     await ctx.channel.send(f"It took me {duration_in_s}s to drink a beer and reply to this message, SKÅL as we say in swedish!")
+
+@bot.command()
+async def temp(ctx):
+    process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE)
+    output, _error = process.communicate()
+    temp = float(output[output.index('=') + 1:output.rindex("'")])
+    await ctx.channel.send(f"Im {temp}°C hot :sunglasses:")
 
 @bot.command()
 async def welcome_message(ctx):
