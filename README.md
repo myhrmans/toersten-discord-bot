@@ -55,4 +55,4 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 - [Martin Myhrman](https://github.com/myhrmans/)
 - [Karl-Johan Djervbrant](https://github.com/kallekj/)
 - [Andreas Häggström](https://github.com/AndreasH96/)
-- [Filip Göranson](https://github.com/filipgoranson/)# toersten-discord-bot
+- [Filip Göranson](https://github.com/filipgoranson/)

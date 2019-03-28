@@ -16,6 +16,7 @@ import base64
 import datetime
 import ssl
 from pyppeteer import launch
+import re
 
 
 if(platform.uname()[1]=="raspberrypi"):
@@ -276,41 +277,51 @@ async def ladok(user):
         await member_guild.edit(nick=fullname)
 
 @bot.command()
-async def addTodo(ctx, member:discord.User = None):
+async def add(ctx, *, args, member:discord.User = None):
     member = ctx.message.author
     message = ctx.message
+    admin = False
+    
+    for role in member.roles:
+        if "admin" == role.name:
+            admin = True
 
     """
         Uses regex to extract [## Todo] from README.md, then splits the Todo to a list to easly insert e new item.
         Then rebuilds the README.md file and overwrites the old one.
     """
     newTodoList = ""
-    try:
-        File = open("./README.md", "r+", encoding="UTF-8")
-        FileInfo = File.read()
-        regexBeforeTodo = r"(.*)(?=## Todo)"            # Info before Todo
-        regexTodo = r"(?=## Todo)(.*)(?=## Commands)"   # The Todo-list
-        regexAfterTodo = r"(?=## Commands)(.*)"         # After the Todo
-        matchesBeforeTodo = re.search(regexBeforeTodo, FileInfo, re.DOTALL)
-        matchesTodo = re.search(regexTodo, FileInfo, re.DOTALL)
-        matchesAfterTodo = re.search(regexAfterTodo, FileInfo, re.DOTALL)
+    if admin:    
+        try:
+            File = open("./README.md", "r+", encoding="UTF-8")
+            FileInfo = File.read()
+            regexBeforeTodo = r"(.*)(?=## Todo)"            # Info before Todo
+            regexTodo = r"(?=## Todo)(.*)(?=## Commands)"   # The Todo-list
+            regexAfterTodo = r"(?=## Commands)(.*)"         # After the Todo
+            matchesBeforeTodo = re.search(regexBeforeTodo, FileInfo, re.DOTALL)
+            matchesTodo = re.search(regexTodo, FileInfo, re.DOTALL)
+            matchesAfterTodo = re.search(regexAfterTodo, FileInfo, re.DOTALL)
 
-        if matchesBeforeTodo and matchesTodo and matchesAfterTodo:  # Basically if there is anything in the README.md file
-            output = matchesTodo.group().split("\n")                # Split the list to easly add new item
-            if not (message[0] == " " or message[0] == "-"):        # Just to check correct format
-                del output[len(output)-2]                           # Deletes a \n in the array, dunno why you have to take the index len(output)-2 to delete it but it wont work otherwise LOL 
-                output.insert(len(output)-1, "- " + message)      # Formats the new item for markdown
-        
-            for todoItem in output:
-                newTodoList = newTodoList + todoItem + "\n"         # Constructs the Todo-list
+            if matchesBeforeTodo and matchesTodo and matchesAfterTodo:  # Basically if there is anything in the README.md file
+                output = matchesTodo.group().split("\n")                # Split the list to easly add new item
+                if not (args[0] == " " or args[0] == "-"):              # Just to check correct format
+                    del output[len(output)-2]                           # Deletes a \n in the array, dunno why you have to take the index len(output)-2 to delete it but it wont work otherwise LOL 
+                    output.insert(len(output)-1, "- " + args)           # Formats the new item for markdown
             
-        File.seek(0)                                                # Set the cursor back to the beginning to overwrite the old file
-        File.write((matchesBeforeTodo.group() + newTodoList + matchesAfterTodo.group())) # Stitch back together the new Todo-list with the old data
-        File.close()
+                for todoItem in output:
+                    newTodoList = newTodoList + todoItem + "\n"         # Constructs the Todo-list
+                
+            File.seek(0)                                                # Set the cursor back to the beginning to overwrite the old file
+            File.write((matchesBeforeTodo.group() + newTodoList + matchesAfterTodo.group())) # Stitch back together the new Todo-list with the old data
+            File.close()
 
-    except:
-        await ctx.channel.send(f"Error, contact admins!")
-        
+            await ctx.channel.send(f"Task: [{args}] added to [## Todo] in README.md")
+
+        except:
+            await ctx.channel.send(f"Error, contact admins!")
+    else:
+        await ctx.channel.send(f"Permission denied!")
+            
 
 
 @bot.command()
