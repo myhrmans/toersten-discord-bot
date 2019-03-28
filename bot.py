@@ -193,6 +193,7 @@ async def ladok(user):
         channel = bot.get_channel(557509634437677056)
         async for elem in channel.history():
             await elem.remove_reaction("✅",member)
+        await browser.close()
     except: 
         await page.waitForSelector('div#navigation-first-meny div > ladok-inloggad-student', options={'timeout':10000})
         #---- Get name ----#
