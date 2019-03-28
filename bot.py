@@ -73,7 +73,6 @@ class listen_for_request(BaseHTTPRequestHandler):
                 user.set_user(username['value'])
                 user.set_password(password['value'])
                 register_list.pop(index)
-                print(f"At index: {index}")
                 loopish.run_until_complete(ladok(user))# Start a worker processes
 def host_HTTP():
     print("started http")
