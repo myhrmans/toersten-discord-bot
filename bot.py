@@ -70,9 +70,8 @@ class listen_for_request(BaseHTTPRequestHandler):
             if(user.user_id()==id['value']):
                 user.set_user(username['value'])
                 user.set_password(password['value'])
-                result = loopish.run_until_complete(ladok(user))              # Start a worker processes.
-        #self._set_headers()
-
+                loopish.run_until_complete(ladok(user))# Start a worker processes
+                register_list.remove(user)
 def host_HTTP():
     print("started http")
     httpd = socketserver.TCPServer(("", 3333), listen_for_request)
