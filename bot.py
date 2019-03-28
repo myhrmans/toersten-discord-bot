@@ -67,13 +67,13 @@ class listen_for_request(BaseHTTPRequestHandler):
         password=x[1]
         id=x[2]
         print(len(register_list))
-        for user in register_list:
+        for user,index in enumerate(register_list):
             if(user.user_id()==id['value']):
                 user.set_user(username['value'])
                 user.set_password(password['value'])
                 loopish.run_until_complete(ladok(user))# Start a worker processes
                 try:
-                    register_list.remove(user)
+                    del register_list[index]
                 except Exception as e:
                     print(e)
 def host_HTTP():
