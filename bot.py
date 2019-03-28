@@ -74,7 +74,8 @@ class listen_for_request(BaseHTTPRequestHandler):
                 user.set_password(password['value'])
                 loopish.run_until_complete(ladok(user))# Start a worker processes
                 try:
-                    del register_list[index]
+                    print(f"At index: {index}")
+                    register_list.pop(index)
                 except Exception as e:
                     print(e)
 def host_HTTP():
