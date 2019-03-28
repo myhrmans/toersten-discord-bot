@@ -17,6 +17,7 @@ import datetime
 import ssl
 from pyppeteer import launch
 from subprocess import PIPE, Popen
+import re
 
 
 if(platform.uname()[1]=="raspberrypi"):
@@ -302,41 +303,52 @@ async def ladok(user):
         courseID = courseID[1:7]
         course_list_ladok.append(courseID)
 
-    #---- Close Browser ----#
-    await browser.close()
+@bot.command()
+async def add(ctx, *, args, member:discord.User = None):
+    member = ctx.message.author
+    message = ctx.message
+    admin = False
+    
+    for role in member.roles:
+        if "admin" == role.name:
+            admin = True
 
-    #---- Calculate Year and add to channels ----#
-    await member.send(f"Om du angivet dina uppgifter rätt {fullname} kommer här kommer dina kurser, dessa har du även tillgång till nu:")
-    topyear = 0
-    isOdet = 0
-    for course in course_list:
-            discord_courseID = course.get_courseID()
-            for courseID in course_list_ladok:
-                if(discord_courseID==courseID):
-                    course_year=int(course.get_year())
-                    isOdet=1
-                    if(course_year > topyear):
-                        topyear = course_year
-                    channel = bot.get_channel(int(course.get_channelID()))
-                    await channel.set_permissions(member, read_messages=True,
-                                                        send_messages=True)
-    for courseID in course_list_ladok:
-        await member.send(f"{courseID}")
-    years = {
-        0: "0",
-        1: "549996194898771978",
-        2: "549996363400740866",
-        3: "549996416882442270",
-        4: "553999707689451532",
-        5: "553999955228884993",
-    }
-    role = years[topyear]
-    guild = bot.get_guild(547454095360000011)
-    member_guild = guild.get_member(member.id)
-    if(isOdet==1):
-        role_disc = guild.get_role(int(role))
-        await member_guild.add_roles(role_disc)
-    await member_guild.edit(nick=fullname)
+    """
+        Uses regex to extract [## Todo] from README.md, then splits the Todo to a list to easly insert e new item.
+        Then rebuilds the README.md file and overwrites the old one.
+    """
+    newTodoList = ""
+    if admin:    
+        try:
+            File = open("./README.md", "r+", encoding="UTF-8")
+            FileInfo = File.read()
+            regexBeforeTodo = r"(.*)(?=## Todo)"            # Info before Todo
+            regexTodo = r"(?=## Todo)(.*)(?=## Commands)"   # The Todo-list
+            regexAfterTodo = r"(?=## Commands)(.*)"         # After the Todo
+            matchesBeforeTodo = re.search(regexBeforeTodo, FileInfo, re.DOTALL)
+            matchesTodo = re.search(regexTodo, FileInfo, re.DOTALL)
+            matchesAfterTodo = re.search(regexAfterTodo, FileInfo, re.DOTALL)
+
+            if matchesBeforeTodo and matchesTodo and matchesAfterTodo:  # Basically if there is anything in the README.md file
+                output = matchesTodo.group().split("\n")                # Split the list to easly add new item
+                if not (args[0] == " " or args[0] == "-"):              # Just to check correct format
+                    del output[len(output)-2]                           # Deletes a \n in the array, dunno why you have to take the index len(output)-2 to delete it but it wont work otherwise LOL 
+                    output.insert(len(output)-1, "- " + args)           # Formats the new item for markdown
+            
+                for todoItem in output:
+                    newTodoList = newTodoList + todoItem + "\n"         # Constructs the Todo-list
+                
+            File.seek(0)                                                # Set the cursor back to the beginning to overwrite the old file
+            File.write((matchesBeforeTodo.group() + newTodoList + matchesAfterTodo.group())) # Stitch back together the new Todo-list with the old data
+            File.close()
+
+            await ctx.channel.send(f"Task: [{args}] added to [## Todo] in README.md")
+
+        except:
+            await ctx.channel.send(f"Error, contact admins!")
+    else:
+        await ctx.channel.send(f"Permission denied!")
+            
 
 
 @bot.command()
