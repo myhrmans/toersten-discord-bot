@@ -41,14 +41,16 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 
 ## Commands
 
-| Command       | Description                               |
-|---------------|-------------------------------------------|
-| 7: ping       | Check latency                             |
-| 7: version    | Check bot version                         |
-| 7: courses    | Returns course attendance from Blackboard |
-| 7: report     | To report a bug or issue to admins        |
-| 7: register   | To get courseID from Blackboard           |
-| 7: help       | Returns commands to write                 |
+| Command       | Description                                   |
+|---------------|-----------------------------------------------|
+| 7: ping       | Check latency                                 |
+| 7: version    | Check bot version                             |
+| 7: courses    | Returns course attendance from Blackboard     |
+| 7: report     | To report a bug or issue to admins            |
+| 7: register   | To get courseID from Blackboard               |
+| 7: help       | Returns commands to write                     |
+| 7: todo       | Returns the todo-list (admins only)           |
+| 7: add        | Adds a string to the todo-list (admin only)   |
 
 ## Contributors
 
