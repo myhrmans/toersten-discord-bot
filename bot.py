@@ -321,7 +321,36 @@ async def add(ctx, *, args, member:discord.User = None):
             await ctx.channel.send(f"Error, contact admins!")
     else:
         await ctx.channel.send(f"Permission denied!")
+
+
+@bot.command()
+async def todo(ctx, member:discord.User = None):
+    member = ctx.message.author
+    message = ctx.message
+    admin = False
+    
+    for role in member.roles:
+        if "admin" == role.name:
+            admin = True
+
+    """
+        Uses regex to extract [## Todo] from README.md.
+    """
+    if admin:    
+        try:
+            File = open("./README.md", "r", encoding="UTF-8")
+            FileInfo = File.read()
+            regexTodo = r"(?=## Todo)(.*)(?=## Commands)"   # The Todo-list
+            matchesTodo = re.search(regexTodo, FileInfo, re.DOTALL)
             
+            if matchesTodo:                                             # Basically if there is anything in the README.md file
+                await ctx.channel.send(matchesTodo.group())
+
+        except:
+            await ctx.channel.send(f"Error, contact admins!")
+    else:
+        await ctx.channel.send(f"Permission denied!")
+
 
 
 @bot.command()
