@@ -304,7 +304,7 @@ async def ladok(user):
         print(f"{program_name}<--Program reading")
         for program in program_list:
             print(f"{program}")
-        program_name not in program_list:
+        if program_name not in program_list:
             topyear = 0
         role = years[topyear]
         guild = bot.get_guild(547454095360000011)
