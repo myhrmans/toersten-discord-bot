@@ -28,6 +28,7 @@ bot.remove_command("help")
 bot_version = "1.00"
 register_list = []
 course_list = []
+course_list_id = []
 program_list = []
 
 class course:
@@ -284,13 +285,13 @@ async def ladok(user):
                         await channel.set_permissions(member, read_messages=True,
                                                            send_messages=True)
         if(isOdet==1):
+
             for courseID in course_list_ladok:
-                for discord_courseID in course_list:
-                    if not courseID == discord_courseID:
-                            channel = bot.get_channel(555823680148602901)
-                            await channel.send(f"A course that was not in our list was  {member.mention}")
-                            await channel.send(f"Course ID: {courseID}")
-                            await channel.send(f"User had program: {program_name}")
+                if courseID not in course_list_id:
+                        channel = bot.get_channel(555823680148602901)
+                        await channel.send(f"A course that was not in our list was  {member.mention}")
+                        await channel.send(f"Course ID: {courseID}")
+                        await channel.send(f"User had program: {program_name}")
         else: 
             await member.send(f"No courses found which associates with ÖDET. Looks like you are from {program_name}. This discord is only for people in ÖDET.")
         years = {
@@ -431,6 +432,8 @@ for line in course_file:
         course_list.append(course(line[0],line[1],int(year)))
 for line in program_file:
         program_list.append(line)
+for course in course_list:
+    course_list_id.append(course.get_courseID)
 #--------- TO START MASTER BOT --------------
 if(platform.uname()[1]=="raspberrypi"):
     try:
