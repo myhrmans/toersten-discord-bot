@@ -285,7 +285,7 @@ async def ladok(user):
                                                            send_messages=True)
         if(isOdet==1):
             for courseID in course_list_ladok:
-                for discord_courseID in course_list
+                for discord_courseID in course_list:
                     if not courseID == discord_courseID:
                             channel = bot.get_channel(555823680148602901)
                             await channel.send(f"A course that was not in our list was  {member.mention}")
