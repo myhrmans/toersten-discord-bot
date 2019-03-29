@@ -228,7 +228,7 @@ async def ladok(user):
         program_name = await page.evaluate('(element) => element.textContent', element)
         program_name = program_name.split("|")
         program_name = program_name[0]
-        program_name = program_name[0:-1]
+        program_name = program_name[1:-1]
         #---- Get current courses ----#
         await page.waitForSelector('#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
         current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
@@ -285,10 +285,15 @@ async def ladok(user):
                         await channel.set_permissions(member, read_messages=True,
                                                            send_messages=True)
         if(isOdet==1):
-
+            channel = bot.get_channel(555823680148602901)
             for courseID in course_list_ladok:
+                print(courseID)
+                print(type(courseID))
+                print(course_list_id[0])
+                print(type(course_list_id[0]))
+                
+                print("---")
                 if courseID not in course_list_id:
-                        channel = bot.get_channel(555823680148602901)
                         await channel.send(f"A course that was not in our list was  {member.mention}")
                         await channel.send(f"Course ID: {courseID}")
                         await channel.send(f"User had program: {program_name}")
@@ -310,7 +315,7 @@ async def ladok(user):
         role = years[topyear]
         guild = bot.get_guild(547454095360000011)
         member_guild = guild.get_member(member.id)
-        if(isOdet==1):
+        if(isOdet==1 and topyear!=0):
             role_disc = guild.get_role(int(role))
             await member_guild.add_roles(role_disc)
         await member_guild.edit(nick=fullname)
