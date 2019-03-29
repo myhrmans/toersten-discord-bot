@@ -285,12 +285,11 @@ async def ladok(user):
                                                            send_messages=True)
         if(isOdet==1):
             for courseID in course_list_ladok:
-                if courseID not in course_list:
-                        channel = bot.get_channel(555823680148602901)
-                        await channel.send(f"A course that was not in our list was  {member.mention}")
-                        await channel.send(f"Course ID: {courseID}")
-                        if program_name not in program_list:
-                            topyear = 0
+                for discord_courseID in course_list
+                    if not courseID == discord_courseID:
+                            channel = bot.get_channel(555823680148602901)
+                            await channel.send(f"A course that was not in our list was  {member.mention}")
+                            await channel.send(f"Course ID: {courseID}")
                             await channel.send(f"User had program: {program_name}")
         else: 
             await member.send(f"No courses found which associates with ÖDET. Looks like you are from {program_name}. This discord is only for people in ÖDET.")
@@ -302,6 +301,11 @@ async def ladok(user):
             4: "553999707689451532",
             5: "553999955228884993",
         }
+        print(f"{program_name}<--Program reading")
+        for program in program_list:
+            print(f"{program}")
+        program_name not in program_list:
+            topyear = 0
         role = years[topyear]
         guild = bot.get_guild(547454095360000011)
         member_guild = guild.get_member(member.id)
