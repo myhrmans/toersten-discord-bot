@@ -17,7 +17,7 @@ import datetime
 import ssl
 from pyppeteer import launch
 import re
-from subprocess import PIPE, Popen
+from gpiozero import CPUTemperature
 
 
 if(platform.uname()[1]=="raspberrypi"):
@@ -104,10 +104,8 @@ async def ping(ctx):
 
 @bot.command()
 async def temp(ctx):
-    process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE)
-    output, _error = process.communicate()
-    temp = float(output[output.index('=') + 1:output.rindex("'")])
-    await ctx.channel.send(f"Im {temp}°C hot :sunglasses:")
+    cpu = CPUTemperature()
+    await ctx.channel.send(f"Im {cpu}°C hot :sunglasses:")
 
 @bot.command()
 async def welcome_message(ctx):
@@ -435,8 +433,11 @@ for line in course_file:
         if(line[0]=="ÅR"):
             year=line[1]
         course_list.append(course(line[0],line[1],int(year)))
-for line in program_file:
+course_file.close()
+lines = program_file.read().split('\n')
+for line in lines:
         program_list.append(line)
+program_file.close()
 for course in course_list:
     course_list_id.append(course.get_courseID())
 #--------- TO START MASTER BOT --------------
