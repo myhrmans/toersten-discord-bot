@@ -270,7 +270,6 @@ async def ladok(user):
         await browser.close()
 
         #---- Calculate Year and add to channels ----#
-        await member.send(f"Om du angivet dina uppgifter rätt {fullname} kommer här kommer dina kurser, dessa har du även tillgång till nu:")
         topyear = 0
         isOdet = 0
         for course in course_list:
@@ -294,7 +293,7 @@ async def ladok(user):
                             topyear = 0
                             await channel.send(f"User had program: {program_name}")
         else: 
-            member.send(f"No courses found which associates with ÖDET. Looks like you are from {program_name}")
+            await member.send(f"No courses found which associates with ÖDET. Looks like you are from {program_name}")
         years = {
             0: "0",
             1: "549996194898771978",
