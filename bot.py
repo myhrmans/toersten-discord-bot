@@ -293,7 +293,7 @@ async def ladok(user):
                             topyear = 0
                             await channel.send(f"User had program: {program_name}")
         else: 
-            await member.send(f"No courses found which associates with ÖDET. Looks like you are from {program_name}")
+            await member.send(f"No courses found which associates with ÖDET. Looks like you are from {program_name}. This discord is only for people in ÖDET.")
         years = {
             0: "0",
             1: "549996194898771978",
