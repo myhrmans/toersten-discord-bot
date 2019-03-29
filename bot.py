@@ -227,7 +227,7 @@ async def ladok(user):
         program_name = await page.evaluate('(element) => element.textContent', element)
         program_name = program_name.split("|")
         program_name = program_name[0]
-        program_name = firstname[0:-1]
+        program_name = program_name[0:-1]
         #---- Get current courses ----#
         await page.waitForSelector('#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
         current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
