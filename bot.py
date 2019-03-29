@@ -293,7 +293,8 @@ async def ladok(user):
                         if program_name not in program_list:
                             topyear = 0
                             await channel.send(f"User had program: {program_name}")
-
+        else: 
+            member.send(f"No courses found which associates with ÖDET. Looks like you are from {program_name}")
         years = {
             0: "0",
             1: "549996194898771978",
