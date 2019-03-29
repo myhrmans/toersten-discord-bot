@@ -17,7 +17,7 @@ import datetime
 import ssl
 from pyppeteer import launch
 import re
-from subprocess import PIPE, Popen
+from gpiozero import CPUTemperature, LoadAverage, DiskUsage
 
 
 if(platform.uname()[1]=="raspberrypi"):
@@ -103,11 +103,29 @@ async def ping(ctx):
     await ctx.channel.send(f"It took me {duration_in_s}s to drink a beer and reply to this message, SKÅL as we say in swedish!")
 
 @bot.command()
-async def temp(ctx):
-    process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE)
-    output, _error = process.communicate()
-    temp = float(output[output.index('=') + 1:output.rindex("'")])
-    await ctx.channel.send(f"Im {temp}°C hot :sunglasses:")
+async def pi(ctx, *, args):
+    if "temp" in args:
+        cpu = CPUTemperature()
+        cpu_temp = round(cpu.temperature)
+        cpu.close
+        await ctx.channel.send(f"Temp: {cpu.temperature}°C")
+    if "load" in args:
+        load = LoadAverage()
+        load_avg = round(load.load_average*100)
+        await ctx.channel.send(f"Load: {load_avg}%")
+    if "disk" in args:
+        disk = DiskUsage()
+        disk_usage = round(disk.usage)
+        await ctx.channel.send(f"Disk: {disk_usage}%")
+    if "all" in args:
+        cpu = CPUTemperature()
+        load = LoadAverage()
+        load_avg = round(load.load_average*100)
+        disk = DiskUsage()
+        disk_usage = round(disk.usage)
+        await ctx.channel.send(f"Temp: {cpu.temperature}°C")
+        await ctx.channel.send(f"Load: {load_avg}%")
+        await ctx.channel.send(f"Disk: {disk_usage}%")
 
 @bot.command()
 async def welcome_message(ctx):
@@ -203,15 +221,8 @@ async def ladok(user):
     await page.keyboard.type(password)
     await page.click('body > div > div > div > div > form > div > div > div:nth-child(3) > button')
     try:
-        await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':3000})
-        await member.send("Wrong username or password. Please try again by going into #välkommen")
-        channel = bot.get_channel(557509634437677056)
-        async for elem in channel.history():
-            await elem.remove_reaction("✅",member)
-        await browser.close()
-    except: 
-        await page.waitForSelector('div#navigation-first-meny div > ladok-inloggad-student', options={'timeout':10000})
-        #---- Get name ----#
+        await page.waitForSelector('div#navigation-first-meny div > ladok-inloggad-student', options={'timeout':5000})
+            #---- Get name ----#
         element = await page.querySelector('div#navigation-first-meny div > ladok-inloggad-student')
         name = await page.evaluate('(element) => element.textContent', element)
         fullname = name.split("|")
@@ -220,8 +231,7 @@ async def ladok(user):
         firstname = fullname[1]
         firstname = firstname[1:-1]
         lastname = fullname[0]
-        fullname = firstname + " " + lastname
-        print(fullname) #REMOVE
+        fullname = firstname + "" + lastname
 
         #---- Get program name ----#
         element = await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-paketeringlink > h3', options={'timeout':10000})
@@ -283,18 +293,12 @@ async def ladok(user):
                             topyear = course_year
                         channel = bot.get_channel(int(course.get_channelID()))
                         await channel.set_permissions(member, read_messages=True,
-                                                           send_messages=True)
+                                                            send_messages=True)
         if(isOdet==1):
             channel = bot.get_channel(555823680148602901)
             for courseID in course_list_ladok:
-                print(courseID)
-                print(type(courseID))
-                print(course_list_id[0])
-                print(type(course_list_id[0]))
-                
-                print("---")
                 if courseID not in course_list_id:
-                        await channel.send(f"A course that was not in our list was  {member.mention}")
+                        await channel.send(f"A course that was not in our list was reported by {member.mention} via sign-up.")
                         await channel.send(f"Course ID: {courseID}")
                         await channel.send(f"User had program: {program_name}")
         else: 
@@ -307,18 +311,33 @@ async def ladok(user):
             4: "553999707689451532",
             5: "553999955228884993",
         }
-        print(f"{program_name}<--Program reading")
-        for program in program_list:
-            print(f"{program}")
         if program_name not in program_list:
             topyear = 0
+
         role = years[topyear]
         guild = bot.get_guild(547454095360000011)
         member_guild = guild.get_member(member.id)
+        years_text = {
+            1: "1st",
+            2: "2nd",
+            3: "3th",
+            4: "4th",
+            5: "5th"
+        }
         if(isOdet==1 and topyear!=0):
             role_disc = guild.get_role(int(role))
             await member_guild.add_roles(role_disc)
-        await member_guild.edit(nick=fullname)
+            yr = years_text[topyear]
+            await member.send(f"Welcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Halmstad Högskola. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten")
+            await member_guild.edit(nick=fullname)
+    except: 
+        await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':1000})
+        await member.send("Wrong username or password. Please try again by going into #välkommen.")
+        channel = bot.get_channel(557509634437677056)
+        async for elem in channel.history():
+            await elem.remove_reaction("✅",member)
+        await browser.close()
+    
 
 @bot.command()
 async def add(ctx, *, args, member:discord.User = None):
@@ -435,8 +454,11 @@ for line in course_file:
         if(line[0]=="ÅR"):
             year=line[1]
         course_list.append(course(line[0],line[1],int(year)))
-for line in program_file:
+course_file.close()
+lines = program_file.read().split('\n')
+for line in lines:
         program_list.append(line)
+program_file.close()
 for course in course_list:
     course_list_id.append(course.get_courseID())
 #--------- TO START MASTER BOT --------------
