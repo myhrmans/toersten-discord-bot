@@ -438,7 +438,7 @@ for line in course_file:
 for line in program_file:
         program_list.append(line)
 for course in course_list:
-    course_list_id.append(course.get_courseID)
+    course_list_id.append(course.get_courseID())
 #--------- TO START MASTER BOT --------------
 if(platform.uname()[1]=="raspberrypi"):
     try:
