@@ -28,6 +28,8 @@ bot.remove_command("help")
 bot_version = "1.00"
 register_list = []
 course_list = []
+program_list = []
+
 class course:
     def __init__(self, courseID, channelID, year):
         self.courseID = courseID
@@ -110,6 +112,7 @@ async def temp(ctx):
 async def welcome_message(ctx):
     channel = bot.get_channel(557509634437677056)
     await channel.send("Welcome to ÖDETs Discord channel!\n\nThe main purpose of this channel is for students to discuss courses, exams and labs etc.\nMain language is Swedish but all of the documentation is written in english since there might be x-change students discussing in some of the courses.\nTo use this channel you must first authenticate that you're a student of ÖDET, this by reacting on this message. By authenticating to this channel you accept the following community guidelines:\n\n- No harassment\n- No hate or racism\n- No cheating\n- Keep good tone to each other\n- You need to follow Swedish laws such as 'Diskrimineringslagen'.\n\nWe are all here to help each other and we all want a nice community to discuss our studies, if you can't follow these simple rules you will get banned.\n\n---------------------------------------------------------------------------------------------------------------\n\nCheck the README.md file in the github repository for commands on how to interact with Toersten. If there's any problems, don't hesitate to contact the channel admins! If you want to contribute to the community or with development, feel free to contact us! Especially if you have experience with Python and JavaScript.\n\n//Admins\nP.S Toersten vakar över oss alla, ty han är den allsmäktige!")
+
 @bot.command()
 async def report(ctx, member:discord.User = None):
     member = ctx.message.author
@@ -219,6 +222,12 @@ async def ladok(user):
         fullname = firstname + " " + lastname
         print(fullname) #REMOVE
 
+        #---- Get program name ----#
+        element = await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-paketeringlink > h3', options={'timeout':10000})
+        program_name = await page.evaluate('(element) => element.textContent', element)
+        program_name = program_name.split("|")
+        program_name = program_name[0]
+        program_name = firstname[0:-1]
         #---- Get current courses ----#
         await page.waitForSelector('#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
         current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
@@ -231,24 +240,31 @@ async def ladok(user):
                 course_list_ladok.append(courseID)
 
         #---- Get uncompleted courses ----#
-        uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > ladok-oavslutade-kurser-i-struktur > div > ladok-kommande-kurslista > div')
-        for element in uncompleted:
-            element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
-            element_text = await page.evaluate('(element) => element.textContent', element)
-            courseID = element_text.split("|")
-            courseID = courseID[2]
-            courseID = courseID[1:7]
-            course_list_ladok.append(courseID)
+        try:
+            uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > ladok-oavslutade-kurser-i-struktur > div > ladok-kommande-kurslista > div')
+            for element in uncompleted:
+                element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+                element_text = await page.evaluate('(element) => element.textContent', element)
+                courseID = element_text.split("|")
+                courseID = courseID[2]
+                courseID = courseID[1:7]
+                course_list_ladok.append(courseID)
+        except:
+            print("no uncompleted courses")
 
         #---- Get self-contained courses ----#
-        self_contained_courses = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(4) > ladok-kommande-kurslista > div')
-        for element in self_contained_courses:
-            element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
-            element_text = await page.evaluate('(element) => element.textContent', element)
-            courseID = element_text.split("|")
-            courseID = courseID[2]
-            courseID = courseID[1:7]
-            course_list_ladok.append(courseID)
+        try:
+            self_contained_courses = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(4) > ladok-kommande-kurslista > div')
+            for element in self_contained_courses:
+                element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+                element_text = await page.evaluate('(element) => element.textContent', element)
+                courseID = element_text.split("|")
+                courseID = courseID[2]
+                courseID = courseID[1:7]
+                course_list_ladok.append(courseID)
+        except:
+            print("no self-contained courses")
+            await browser.close()
 
         #---- Close Browser ----#
         await browser.close()
@@ -260,16 +276,24 @@ async def ladok(user):
         for course in course_list:
                 discord_courseID = course.get_courseID()
                 for courseID in course_list_ladok:
-                    if(discord_courseID==courseID):
+                    if(discord_courseID==courseID): 
                         course_year=int(course.get_year())
                         isOdet=1
                         if(course_year > topyear):
                             topyear = course_year
                         channel = bot.get_channel(int(course.get_channelID()))
                         await channel.set_permissions(member, read_messages=True,
-                                                            send_messages=True)
-        for courseID in course_list_ladok:
-            await member.send(f"{courseID}")
+                                                           send_messages=True)
+        if(isOdet==1):
+            for courseID in course_list_ladok:
+                if courseID not in course_list:
+                        channel = bot.get_channel(555823680148602901)
+                        await channel.send(f"A course that was not in our list was  {member.mention}")
+                        await channel.send(f"Course ID: {courseID}")
+                        if program_name not in program_list:
+                            topyear = 0
+                            await channel.send(f"User had program: {program_name}")
+
         years = {
             0: "0",
             1: "549996194898771978",
@@ -376,6 +400,7 @@ async def help(ctx):
         await ctx.channel.send(f"Error: Cant find README.md, contact admins!")
 
 course_file = open("courses/courses.txt", "r")
+program_file = open("courses/programs.txt", "r")
 year=-1
 
 """ ------------------------------- Encryption -------------------------------"""
@@ -400,6 +425,8 @@ for line in course_file:
         if(line[0]=="ÅR"):
             year=line[1]
         course_list.append(course(line[0],line[1],int(year)))
+for line in program_file:
+        program_list.append(line)
 #--------- TO START MASTER BOT --------------
 if(platform.uname()[1]=="raspberrypi"):
     try:
