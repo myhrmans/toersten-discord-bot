@@ -91,7 +91,7 @@ async def on_ready():
     print("Ready to go!")
     print(f"Serving: {len(bot.guilds)} guilds.")
     await bot.change_presence(status=discord.Status.online, activity=discord.Game(name="beerpong @ smålands!"))
-    channel = bot.get_channel(557509634437677056)
+    channel = bot.get_channel(560931911682490379)
     await channel.send("I've rebooted, cheers! :beers:")
 
 
