@@ -13,10 +13,9 @@ python bot.py ["ID of bot, e.g. 0001"] ["password"]
 
 To be able to run the bot locally you need the following moduals:
 
-- mechanicalsoup
+- pyppeteer==0.0.18
 - discord#rewrite
-- cssselector
-
+- gpiozero
 All modules are installed via pip, but since the discor#rewrite isn't hosted on official repositorys you have to use this command instead: 
 
 ```python
