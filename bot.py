@@ -1,23 +1,23 @@
-import discord
-import platform
-from discord.ext import commands
-import mechanicalsoup
-import lxml.html
-import secrets
-import urllib.parse
-import json
-import socketserver
 import asyncio
-from threading import Thread
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import sys
-from itertools import cycle
 import base64
 import datetime
-import ssl
+import discord
+from discord.ext import commands
+from gpiozero import CPUTemperature, LoadAverage, DiskUsage
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from itertools import cycle
+import json
+import lxml.html
+import mechanicalsoup
+import platform
 from pyppeteer import launch
 import re
-from gpiozero import CPUTemperature, LoadAverage, DiskUsage
+import secrets
+import socketserver
+import ssl
+import sys
+from threading import Thread
+import urllib.parse
 
 
 if(platform.uname()[1]=="raspberrypi"):
