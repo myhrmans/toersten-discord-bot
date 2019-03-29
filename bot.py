@@ -104,28 +104,29 @@ async def ping(ctx):
 
 @bot.command()
 async def pi(ctx, *, args):
-    if "temp" in args:
-        cpu = CPUTemperature()
-        cpu_temp = round(cpu.temperature)
-        cpu.close
-        await ctx.channel.send(f"Temp: {cpu.temperature}°C")
-    if "load" in args:
-        load = LoadAverage()
-        load_avg = round(load.load_average*100)
-        await ctx.channel.send(f"Load: {load_avg}%")
-    if "disk" in args:
-        disk = DiskUsage()
-        disk_usage = round(disk.usage)
-        await ctx.channel.send(f"Disk: {disk_usage}%")
-    if "all" in args:
-        cpu = CPUTemperature()
-        load = LoadAverage()
-        load_avg = round(load.load_average*100)
-        disk = DiskUsage()
-        disk_usage = round(disk.usage)
-        await ctx.channel.send(f"Temp: {cpu.temperature}°C")
-        await ctx.channel.send(f"Load: {load_avg}%")
-        await ctx.channel.send(f"Disk: {disk_usage}%")
+    member = ctx.message.author
+    if(isAdmin(member)):
+        if "temp" in args:
+            cpu = CPUTemperature()
+            cpu_temp = round(cpu.temperature)
+            await ctx.channel.send(f"Temp: {cpu_temp}°C")
+        if "load" in args:
+            load = LoadAverage()
+            load_avg = round(load.load_average*100)
+            await ctx.channel.send(f"Load: {load_avg}%")
+        if "disk" in args:
+            disk = DiskUsage()
+            disk_usage = round(disk.usage)
+            await ctx.channel.send(f"Disk: {disk_usage}%")
+        if "all" in args:
+            cpu = CPUTemperature()
+            load = LoadAverage()
+            load_avg = round(load.load_average*100)
+            disk = DiskUsage()
+            disk_usage = round(disk.usage)
+            await ctx.channel.send(f"Temp: {cpu.temperature}°C")
+            await ctx.channel.send(f"Load: {load_avg}%")
+            await ctx.channel.send(f"Disk: {disk_usage}%")
 
 @bot.command()
 async def welcome_message(ctx):
@@ -337,24 +338,22 @@ async def ladok(user):
         async for elem in channel.history():
             await elem.remove_reaction("✅",member)
         await browser.close()
-    
-
+async def isAdmin(member):
+    admin = False
+    for role in member.roles:
+        if "admin" == role.name:
+            admin = True
+    return admin
 @bot.command()
 async def add(ctx, *, args, member:discord.User = None):
     member = ctx.message.author
     message = ctx.message
-    admin = False
-    
-    for role in member.roles:
-        if "admin" == role.name:
-            admin = True
-
     """
         Uses regex to extract [## Todo] from README.md, then splits the Todo to a list to easly insert e new item.
         Then rebuilds the README.md file and overwrites the old one.
     """
     newTodoList = ""
-    if admin:    
+    if isAdmin(member):    
         try:
             File = open("./README.md", "r+", encoding="UTF-8")
             FileInfo = File.read()
@@ -389,17 +388,10 @@ async def add(ctx, *, args, member:discord.User = None):
 @bot.command()
 async def todo(ctx, member:discord.User = None):
     member = ctx.message.author
-    message = ctx.message
-    admin = False
-    
-    for role in member.roles:
-        if "admin" == role.name:
-            admin = True
-
     """
         Uses regex to extract [## Todo] from README.md.
     """
-    if admin:    
+    if isAdmin(member):    
         try:
             File = open("./README.md", "r", encoding="UTF-8")
             FileInfo = File.read()
