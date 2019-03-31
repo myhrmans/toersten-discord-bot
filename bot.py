@@ -178,9 +178,7 @@ async def unregister(ctx, member:discord.User = None):
 
 @bot.command()
 async def version(ctx):
-    await ctx.channel.send("Current Version: {}".format(bot_version))
-    os_name = platform.uname()
-    await ctx.channel.send(f"OS info: {os_name}".format(os_name))
+    await ctx.channel.send(f"Running this: https://github.com/myhrmans/toersten-discord-bot/commit/{bot_version}")
 
 @bot.event
 async def on_reaction_add(reaction, user):
