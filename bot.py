@@ -29,6 +29,7 @@ register_list = []
 course_list = []
 course_list_id = []
 program_list = []
+bot_version = 0.00
 
 class course:
     def __init__(self, courseID, channelID, year):
@@ -459,6 +460,7 @@ for course in course_list:
     course_list_id.append(course.get_courseID())
 #--------- TO START MASTER BOT --------------
 if(platform.uname()[1]=="raspberrypi"):
+    bot_version = sys.argv[2]
     try:
         Thread(target=host_HTTP).start()
     except:
@@ -472,7 +474,7 @@ if(platform.uname()[1]=="raspberrypi"):
         decryptedHost = base64.decodestring(xor_strings(bytes(masterEncrypted, encoding="UTF-8"), key)).decode("UTF-8")
         bot.run(decryptedHost)
         decryptedHost = 0
-        bot_version = sys.argv[2]
+        
         #bot.run(master)
     except Exception as e:
         print(f"Fail bot: {e}")
