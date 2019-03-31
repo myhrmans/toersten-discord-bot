@@ -92,7 +92,7 @@ async def on_ready():
     print(f"Serving: {len(bot.guilds)} guilds.")
     await bot.change_presence(status=discord.Status.online, activity=discord.Game(name="beerpong @ smålands!"))
     channel = bot.get_channel(560931911682490379)
-    await channel.send(f"I've rebooted, cheers! :beers: Running this commit: {bot_version}")
+    await channel.send(f"I've rebooted, cheers! :beers: Running this commit: https://github.com/myhrmans/toersten-discord-bot/commit/{bot_version}")
 
 
 @bot.command()
