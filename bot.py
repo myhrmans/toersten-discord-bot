@@ -25,7 +25,6 @@ if(platform.uname()[1]=="raspberrypi"):
 else:
     bot = commands.Bot(command_prefix="l: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
 bot.remove_command("help")
-bot_version = "1.00"
 register_list = []
 course_list = []
 course_list_id = []
@@ -92,7 +91,7 @@ async def on_ready():
     print(f"Serving: {len(bot.guilds)} guilds.")
     await bot.change_presence(status=discord.Status.online, activity=discord.Game(name="beerpong @ smålands!"))
     channel = bot.get_channel(560931911682490379)
-    await channel.send("I've rebooted, cheers! :beers:")
+    await channel.send(f"I've rebooted, cheers! :beers: Running this commit: {bot_version}")
 
 
 @bot.command()
@@ -202,6 +201,7 @@ async def ladok(user):
     password = str(password)
     course_list_ladok = []
     await member.create_dm()
+    await member.send("Perfect. I've now started working on finding your courses. This can take up to two minutes. Please be patient! :beers:")
     course_list_ladok = []
     #---- Launch browser ----#
     browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser'})
@@ -244,7 +244,7 @@ async def ladok(user):
         program_name = program_name[0]
         program_name = program_name[1:-1]
         #---- Get current courses ----#
-        await page.waitForSelector('#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
+        await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
         current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
         for element in current:
                 element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
@@ -334,7 +334,8 @@ async def ladok(user):
             yr = years_text[topyear]
             await member.send(f"Welcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Halmstad Högskola. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten")
             await member_guild.edit(nick=fullname)
-    except: 
+    except Exception as e:
+        print(e) 
         await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':1000})
         await member.send("Wrong username or password. Please try again by going into #välkommen.")
         channel = bot.get_channel(557509634437677056)
@@ -471,6 +472,7 @@ if(platform.uname()[1]=="raspberrypi"):
         decryptedHost = base64.decodestring(xor_strings(bytes(masterEncrypted, encoding="UTF-8"), key)).decode("UTF-8")
         bot.run(decryptedHost)
         decryptedHost = 0
+        bot_version = sys.argv[2]
         #bot.run(master)
     except Exception as e:
         print(f"Fail bot: {e}")
