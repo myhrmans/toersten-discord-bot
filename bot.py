@@ -193,7 +193,6 @@ async def on_reaction_add(reaction, user):
 
 async def ladok(user):
     member = user.get_member()
-    ID = user.__getattribute__("ID")
     username = user.__getattribute__("username")
     username = str(username)
     password = user.__getattribute__("password")
@@ -201,7 +200,6 @@ async def ladok(user):
     course_list_ladok = []
     await member.create_dm()
     await member.send("Perfect. I've now started working on finding your courses. This can take up to two minutes. Please be patient! :beers:")
-    course_list_ladok = []
     #---- Launch browser ----#
     try:
         browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser'})
