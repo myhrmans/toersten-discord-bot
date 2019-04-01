@@ -224,7 +224,7 @@ async def ladok(user):
     await page.keyboard.type(password)
     await page.click('body > div > div > div > div > form > div > div > div:nth-child(3) > button')
     try:
-        await page.waitForSelector('div#navigation-first-meny div > ladok-inloggad-student', options={'timeout':5000})
+        await page.waitForSelector('div#navigation-first-meny div > ladok-inloggad-student', options={'timeout':10000})
             #---- Get name ----#
         element = await page.querySelector('div#navigation-first-meny div > ladok-inloggad-student')
         name = await page.evaluate('(element) => element.textContent', element)
@@ -237,22 +237,29 @@ async def ladok(user):
         fullname = firstname + "" + lastname
 
         #---- Get program name ----#
-        element = await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-paketeringlink > h3', options={'timeout':10000})
-        program_name = await page.evaluate('(element) => element.textContent', element)
-        program_name = program_name.split("|")
-        program_name = program_name[0]
-        program_name = program_name[1:-1]
+        try:
+            element = await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-paketeringlink > h3', options={'timeout':10000})
+            program_name = await page.evaluate('(element) => element.textContent', element)
+            program_name = program_name.split("|")
+            program_name = program_name[0]
+            program_name = program_name[1:-1]
+        except:
+            channel = bot.get_channel(555823680148602901)
+            await channel.send(f"Something went wrong during getting program name for {member.mention}")
         #---- Get current courses ----#
-        await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
-        current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
-        for element in current:
-                element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
-                element_text = await page.evaluate('(element) => element.textContent', element)
-                courseID = element_text.split("|")
-                courseID = courseID[2]
-                courseID = courseID[1:7]
-                course_list_ladok.append(courseID)
-
+        try:
+            await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
+            current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
+            for element in current:
+                    element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+                    element_text = await page.evaluate('(element) => element.textContent', element)
+                    courseID = element_text.split("|")
+                    courseID = courseID[2]
+                    courseID = courseID[1:7]
+                    course_list_ladok.append(courseID)
+        except:
+            channel = bot.get_channel(555823680148602901)
+            await channel.send(f"Something went wrong during getting current courses for {member.mention}")
         #---- Get uncompleted courses ----#
         try:
             uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > ladok-oavslutade-kurser-i-struktur > div > ladok-kommande-kurslista > div')
@@ -264,7 +271,8 @@ async def ladok(user):
                 courseID = courseID[1:7]
                 course_list_ladok.append(courseID)
         except:
-            print("no uncompleted courses")
+            channel = bot.get_channel(555823680148602901)
+            await channel.send(f"Something went wrong during getting uncompleted courses for {member.mention}")
 
         #---- Get self-contained courses ----#
         try:
@@ -277,8 +285,8 @@ async def ladok(user):
                 courseID = courseID[1:7]
                 course_list_ladok.append(courseID)
         except:
-            print("no self-contained courses")
-            await browser.close()
+            channel = bot.get_channel(555823680148602901)
+            await channel.send(f"Something went wrong during getting self-contained courses for {member.mention}")
 
         #---- Close Browser ----#
         await browser.close()
@@ -336,9 +344,10 @@ async def ladok(user):
             yr = years_text[topyear]
             await member.send(f"Welcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Halmstad Högskola. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten")
             await member_guild.edit(nick=fullname)
-    except Exception as e:
-        print(e) 
-        await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':1000})
+    except:
+        channel = bot.get_channel(555823680148602901)
+        await channel.send(f"Something went wrong during login for {member.mention}")
+        await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':10000})
         await member.send("Wrong username or password. Please try again by going into #välkommen.")
         channel = bot.get_channel(557509634437677056)
         async for elem in channel.history():
