@@ -207,7 +207,7 @@ async def ladok(user):
     course_list_ladok = []
     await member.create_dm()
     await member.send("Perfect. I've now started working on finding your courses. This can take up to two minutes. Please be patient! :beers:")
-
+    channel = bot.get_channel(555823680148602901)
     #---- Launch browser ----#
     try:
         browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser'})
@@ -216,25 +216,21 @@ async def ladok(user):
         await page.goto('https://www.student.ladok.se/')
         await page.setViewport({'width':1024, 'height': 870})
     except:
-        channel = bot.get_channel(555823680148602901)
         await channel.send(f"Something went wrong during selecting next step (0) for {member.mention}")
     try:
         await page.waitForSelector("p:nth-child(5) > a", options={'timeout':10000})
         await page.click("p:nth-child(5) > a")
     except:
-            channel = bot.get_channel(555823680148602901)
             await channel.send(f"Something went wrong during selecting next step (1) for {member.mention}")
     try:
         await page.waitForSelector("div#searchlist > div:nth-child(5)", options={'timeout':10000})
         await page.click('div#searchlist > div:nth-child(5)')
     except:
-        channel = bot.get_channel(555823680148602901)
         await channel.send(f"Something went wrong during selecting next step (2) for {member.mention}")
     try:
         await page.waitForSelector("a#proceed",options={'timeout':10000})
         await page.click("a#proceed")
     except:
-        channel = bot.get_channel(555823680148602901)
         await channel.send(f"Something went wrong during selecting next step (3) for {member.mention}")
     #---- Enter Username and password ----#
     try:
@@ -245,7 +241,6 @@ async def ladok(user):
         await page.keyboard.type(password)
         await page.click('body > div > div > div > div > form > div > div > div:nth-child(3) > button')
     except:
-        channel = bot.get_channel(555823680148602901)
         await channel.send(f"Something went wrong during selecting next step (4) for {member.mention}")
     try:
         await page.waitForSelector('div#navigation-first-meny div > ladok-inloggad-student', options={'timeout':10000})
@@ -268,7 +263,6 @@ async def ladok(user):
             program_name = program_name[0]
             program_name = program_name[1:-1]
         except:
-            channel = bot.get_channel(555823680148602901)
             await channel.send(f"Something went wrong during getting program name for {member.mention}")
         #---- Get current courses ----#
         try:
@@ -282,7 +276,6 @@ async def ladok(user):
                     courseID = courseID[1:7]
                     course_list_ladok.append(courseID)
         except:
-            channel = bot.get_channel(555823680148602901)
             await channel.send(f"Something went wrong during getting current courses for {member.mention}")
         #---- Get uncompleted courses ----#
         try:
@@ -295,7 +288,6 @@ async def ladok(user):
                 courseID = courseID[1:7]
                 course_list_ladok.append(courseID)
         except:
-            channel = bot.get_channel(555823680148602901)
             await channel.send(f"Something went wrong during getting uncompleted courses for {member.mention}")
 
         #---- Get self-contained courses ----#
@@ -309,7 +301,6 @@ async def ladok(user):
                 courseID = courseID[1:7]
                 course_list_ladok.append(courseID)
         except:
-            channel = bot.get_channel(555823680148602901)
             await channel.send(f"Something went wrong during getting self-contained courses for {member.mention}")
 
         #---- Close Browser ----#
