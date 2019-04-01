@@ -291,9 +291,12 @@ async def ladok(user):
                 for courseID in course_list_ladok:
                     if(discord_courseID==courseID): 
                         course_year=int(course.get_year())
+                        await member.send(f"course year: {course_year}")
+                        await member.send(f"top year before: {topyear}")
                         isOdet=1
                         if(course_year > topyear):
                             topyear = course_year
+                            await member.send(f"top year: {topyear}")
                         channel = bot.get_channel(int(course.get_channelID()))
                         await channel.set_permissions(member, read_messages=True,
                                                             send_messages=True)
@@ -350,7 +353,6 @@ async def isAdmin(member):
 @bot.command()
 async def add(ctx, *, args, member:discord.User = None):
     member = ctx.message.author
-    message = ctx.message
     """
         Uses regex to extract [## Todo] from README.md, then splits the Todo to a list to easly insert e new item.
         Then rebuilds the README.md file and overwrites the old one.
