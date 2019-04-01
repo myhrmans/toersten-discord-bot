@@ -335,13 +335,14 @@ async def ladok(user):
             await member_guild.edit(nick=fullname)
     except:
         channel = bot.get_channel(555823680148602901)
-        await channel.send(f"Something went wrong during login for {member.mention}")
-        await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':10000})
-        await member.send("Wrong username or password. Please try again by going into #välkommen.")
         channel = bot.get_channel(557509634437677056)
         async for elem in channel.history():
             await elem.remove_reaction("✅",member)
         await browser.close()
+        await channel.send(f"Something went wrong during login for {member.mention}")
+        await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':10000})
+        await member.send("Wrong username or password. Please try again by going into #välkommen.")
+
 async def isAdmin(member):
     admin = False
     for role in member.roles:
