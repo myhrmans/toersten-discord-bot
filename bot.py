@@ -208,6 +208,8 @@ async def ladok(user):
     await member.create_dm()
     await member.send("Perfect. I've now started working on finding your courses. This can take up to two minutes. Please be patient! :beers:")
     channel = bot.get_channel(555823680148602901)
+    page = ""
+    browser = ""
     #---- Launch browser ----#
     try:
         browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser'})
