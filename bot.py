@@ -18,7 +18,7 @@ import ssl
 import sys
 from threading import Thread
 import urllib.parse
-
+import logging
 
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
@@ -30,6 +30,13 @@ course_list = []
 course_list_id = []
 program_list = []
 bot_version = 0.00
+
+
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 class course:
     def __init__(self, courseID, channelID, year):
@@ -193,7 +200,6 @@ async def on_reaction_add(reaction, user):
 
 async def ladok(user):
     member = user.get_member()
-    ID = user.__getattribute__("ID")
     username = user.__getattribute__("username")
     username = str(username)
     password = user.__getattribute__("password")
@@ -201,7 +207,6 @@ async def ladok(user):
     course_list_ladok = []
     await member.create_dm()
     await member.send("Perfect. I've now started working on finding your courses. This can take up to two minutes. Please be patient! :beers:")
-    course_list_ladok = []
     #---- Launch browser ----#
     try:
         browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser'})
