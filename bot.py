@@ -203,12 +203,15 @@ async def ladok(user):
     await member.send("Perfect. I've now started working on finding your courses. This can take up to two minutes. Please be patient! :beers:")
     course_list_ladok = []
     #---- Launch browser ----#
-    browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser'})
-    page = await browser.newPage()
-    channel = bot.get_channel(555823680148602901)
-    #---- Navigate browser to ladok ----#
-    await page.goto('https://www.student.ladok.se/')
-    await page.setViewport({'width':1024, 'height': 870})
+    try:
+        browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser'})
+        page = await browser.newPage()
+        channel = bot.get_channel(555823680148602901)
+        #---- Navigate browser to ladok ----#
+        await page.goto('https://www.student.ladok.se/')
+        await page.setViewport({'width':1024, 'height': 870})
+    except:
+        await channel.send(f"Something went wrong during selecting next step (0) for {member.mention}")
     try:
         await page.waitForSelector("p:nth-child(5) > a", options={'timeout':10000})
         await page.click("p:nth-child(5) > a")
@@ -443,7 +446,7 @@ async def help(ctx):
 
 course_file = open("courses/courses.txt", "r")
 program_file = open("courses/programs.txt", "r")
-year=-1
+year = 3
 
 """ ------------------------------- Encryption -------------------------------"""
 local0001Encrypted = "6+k<\x14gN=\x192=`X%4@>\x01'95\x18_<d^0\x08o/hd;\x13\x1c\x10\x19\x03@\x12\x1d@_\x1e\x0e\x19.5\x0e&\x05P\x01\x11\x00\x05\x0e\x11-\t\x19\x00!g[\x0c#K;\r\r#-\x05\x06 :k\t,\x04`"
