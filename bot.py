@@ -207,11 +207,11 @@ async def ladok(user):
     course_list_ladok = []
     await member.create_dm()
     await member.send("Perfect. I've now started working on finding your courses. This can take up to two minutes. Please be patient! :beers:")
+    channel = bot.get_channel(555823680148602901)
     #---- Launch browser ----#
     try:
         browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser'})
         page = await browser.newPage()
-        channel = bot.get_channel(555823680148602901)
         #---- Navigate browser to ladok ----#
         await page.goto('https://www.student.ladok.se/')
         await page.setViewport({'width':1024, 'height': 870})
