@@ -400,10 +400,9 @@ async def ladok(user):
     except Exception as e:
         print(e)
         channel = bot.get_channel(555823680148602901)
-        await channel.send(f"Something went wrong during login for {member.mention}")
+        await channel.send(f"Something went wrong during login for {member.mention}\n Error message: \n{e}")
         async for elem in channel.history():
             await elem.remove_reaction("✅",member)
-        await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':10000})
         await member.send("Wrong username or password. Please try again by going into #välkommen.")
         await browser.close()
 async def isAdmin(member):
