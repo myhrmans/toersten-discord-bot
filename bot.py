@@ -214,7 +214,12 @@ async def on_reaction_add(reaction, user):
     if str(reaction.emoji) in reactionResponses.keys():
         await channel.send(reactionResponses[reaction.emoji])
     #do stuff
-
+def getKeyByValue(dic, value):
+    listOfItems = dic.items()
+    for item in listOfItems:
+        if item[1] == value:
+            return  item[0]
+    return 0
 async def ladok(user):
     member = user.get_member()
     username = user.__getattribute__("username")
@@ -351,12 +356,32 @@ async def ladok(user):
             4: "553999707689451532",
             5: "553999955228884993",
         }
-        if program_name not in program_list:
-            topyear = 0
-
-        role = years[topyear]
         guild = bot.get_guild(547454095360000011)
         member_guild = guild.get_member(member.id)
+        if program_name not in program_list:
+            topyear = 0
+        else:
+            courses_name = {
+                1: 'Computer Science and Engineering',
+                2: 'Computer Engineer',
+                3: 'Intelligent Systems',
+                4: 'Mechatronic Engineer',
+                5: 'Electrical Engineer'
+            }
+            courses_id = {
+                1: "553990861705183340",
+                2: "554057748275265627",
+                3: "553990362352582690",
+                4: "554058018384379925",
+                5: "554057912989777952"
+            }
+            course_int_id = getKeyByValue(courses_name, program_name)
+            role_program = courses_id[course_int_id]
+            role_disc = guild.get_role(int(course_int_id))
+            await member_guild.add_roles(role_disc)
+
+        role = years[topyear]
+
         years_text = {
             1: "1st",
             2: "2nd",
