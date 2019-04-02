@@ -18,7 +18,6 @@ import ssl
 import sys
 from threading import Thread
 import urllib.parse
-import logging
 
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
@@ -31,12 +30,6 @@ course_list_id = []
 program_list = []
 bot_version = 0.00
 
-
-logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
 
 class course:
     def __init__(self, courseID, channelID, year):
@@ -211,24 +204,39 @@ async def ladok(user):
     page = ""
     browser = ""
     #---- Launch browser ----#
-    browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser'})
-    page = await browser.newPage()
-    #---- Navigate browser to ladok ----#
-    await page.goto('https://www.student.ladok.se/')
-    await page.setViewport({'width':1024, 'height': 870})
-    await page.waitForSelector("p:nth-child(5) > a", options={'timeout':10000})
-    await page.click("p:nth-child(5) > a")
-    await page.waitForSelector("div#searchlist > div:nth-child(5)", options={'timeout':10000})
-    await page.click('div#searchlist > div:nth-child(5)')
-    await page.waitForSelector("a#proceed",options={'timeout':10000})
-    await page.click("a#proceed")
+    try:
+        browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser'})
+        page = await browser.newPage()
+        #---- Navigate browser to ladok ----#
+        await page.goto('https://www.student.ladok.se/')
+        await page.setViewport({'width':1024, 'height': 870})
+    except:
+        await channel.send(f"Something went wrong during selecting next step (0) for {member.mention}")
+    try:
+        await page.waitForSelector("p:nth-child(5) > a", options={'timeout':10000})
+        await page.click("p:nth-child(5) > a")
+    except:
+            await channel.send(f"Something went wrong during selecting next step (1) for {member.mention}")
+    try:
+        await page.waitForSelector("div#searchlist > div:nth-child(5)", options={'timeout':10000})
+        await page.click('div#searchlist > div:nth-child(5)')
+    except:
+        await channel.send(f"Something went wrong during selecting next step (2) for {member.mention}")
+    try:
+        await page.waitForSelector("a#proceed",options={'timeout':10000})
+        await page.click("a#proceed")
+    except:
+        await channel.send(f"Something went wrong during selecting next step (3) for {member.mention}")
     #---- Enter Username and password ----#
-    await page.waitForSelector('body > div > div > div > div > form > div > div > div:nth-child(1) > div > input', options={'timeout':10000})
-    await page.focus('body > div > div > div > div > form > div > div > div:nth-child(1) > div > input')
-    await page.keyboard.type(username)
-    await page.focus('body > div > div > div > div > form > div > div > div:nth-child(2) > div > input')
-    await page.keyboard.type(password)
-    await page.click('body > div > div > div > div > form > div > div > div:nth-child(3) > button')
+    try:
+        await page.waitForSelector('body > div > div > div > div > form > div > div > div:nth-child(1) > div > input', options={'timeout':10000})
+        await page.focus('body > div > div > div > div > form > div > div > div:nth-child(1) > div > input')
+        await page.keyboard.type(username)
+        await page.focus('body > div > div > div > div > form > div > div > div:nth-child(2) > div > input')
+        await page.keyboard.type(password)
+        await page.click('body > div > div > div > div > form > div > div > div:nth-child(3) > button')
+    except:
+        await channel.send(f"Something went wrong during selecting next step (4) for {member.mention}")
     try:
         await page.waitForSelector('div#navigation-first-meny div > ladok-inloggad-student', options={'timeout':10000})
             #---- Get name ----#
@@ -243,40 +251,53 @@ async def ladok(user):
         fullname = firstname + "" + lastname
 
         #---- Get program name ----#
-        element = await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-paketeringlink > h3', options={'timeout':10000})
-        program_name = await page.evaluate('(element) => element.textContent', element)
-        program_name = program_name.split("|")
-        program_name = program_name[0]
-        program_name = program_name[1:-1]
-        await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
-        current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
-        for element in current:
+        try:
+            element = await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-paketeringlink > h3', options={'timeout':10000})
+            program_name = await page.evaluate('(element) => element.textContent', element)
+            program_name = program_name.split("|")
+            program_name = program_name[0]
+            program_name = program_name[1:-1]
+        except:
+            await channel.send(f"Something went wrong during getting program name for {member.mention}")
+        #---- Get current courses ----#
+        try:
+            await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
+            current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
+            for element in current:
+                    element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+                    element_text = await page.evaluate('(element) => element.textContent', element)
+                    courseID = element_text.split("|")
+                    courseID = courseID[2]
+                    courseID = courseID[1:7]
+                    course_list_ladok.append(courseID)
+        except:
+            await channel.send(f"Something went wrong during getting current courses for {member.mention}")
+        #---- Get uncompleted courses ----#
+        try:
+            uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > ladok-oavslutade-kurser-i-struktur > div > ladok-kommande-kurslista > div')
+            for element in uncompleted:
                 element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
                 element_text = await page.evaluate('(element) => element.textContent', element)
                 courseID = element_text.split("|")
                 courseID = courseID[2]
                 courseID = courseID[1:7]
                 course_list_ladok.append(courseID)
-        #---- Get uncompleted courses ----#
-        uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > ladok-oavslutade-kurser-i-struktur > div > ladok-kommande-kurslista > div')
-        for element in uncompleted:
-            element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
-            element_text = await page.evaluate('(element) => element.textContent', element)
-            courseID = element_text.split("|")
-            courseID = courseID[2]
-            courseID = courseID[1:7]
-            course_list_ladok.append(courseID)
-        await channel.send(f"Something went wrong during getting uncompleted courses for {member.mention}")
+        except:
+            await channel.send(f"Something went wrong during getting uncompleted courses for {member.mention}")
 
         #---- Get self-contained courses ----#
-        self_contained_courses = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(4) > ladok-kommande-kurslista > div')
-        for element in self_contained_courses:
-            element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
-            element_text = await page.evaluate('(element) => element.textContent', element)
-            courseID = element_text.split("|")
-            courseID = courseID[2]
-            courseID = courseID[1:7]
-            course_list_ladok.append(courseID)
+        try:
+            self_contained_courses = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(4) > ladok-kommande-kurslista > div')
+            for element in self_contained_courses:
+                element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+                element_text = await page.evaluate('(element) => element.textContent', element)
+                courseID = element_text.split("|")
+                courseID = courseID[2]
+                courseID = courseID[1:7]
+                course_list_ladok.append(courseID)
+        except:
+            await channel.send(f"Something went wrong during getting self-contained courses for {member.mention}")
+
         #---- Close Browser ----#
         await browser.close()
 
@@ -288,12 +309,9 @@ async def ladok(user):
                 for courseID in course_list_ladok:
                     if(discord_courseID==courseID): 
                         course_year=int(course.get_year())
-                        await member.send(f"course year: {course_year}")
-                        await member.send(f"top year before: {topyear}")
                         isOdet=1
                         if(course_year > topyear):
                             topyear = course_year
-                            await member.send(f"top year: {topyear}")
                         channel = bot.get_channel(int(course.get_channelID()))
                         await channel.set_permissions(member, read_messages=True,
                                                             send_messages=True)
