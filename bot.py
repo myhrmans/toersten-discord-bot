@@ -201,17 +201,12 @@ async def ladok(user):
     await member.create_dm()
     await member.send("Perfect. I've now started working on finding your courses. This can take up to two minutes. Please be patient! :beers:")
     channel = bot.get_channel(555823680148602901)
-    page = ""
-    browser = ""
     #---- Launch browser ----#
-    try:
-        browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser','args': '--no-sandbox'})
-        page = await browser.newPage()
-        #---- Navigate browser to ladok ----#
-        await page.goto('https://www.student.ladok.se/')
-        await page.setViewport({'width':1024, 'height': 870})
-    except:
-        await channel.send(f"Something went wrong during selecting next step (0) for {member.mention}")
+    browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser','args': '--no-sandbox'})
+    page = await browser.newPage()
+    #---- Navigate browser to ladok ----#
+    await page.goto('https://www.student.ladok.se/')
+    await page.setViewport({'width':1024, 'height': 870})
     try:
         await page.waitForSelector("p:nth-child(5) > a", options={'timeout':10000})
         await page.click("p:nth-child(5) > a")
@@ -351,14 +346,15 @@ async def ladok(user):
             yr = years_text[topyear]
             await member.send(f"Welcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Halmstad Högskola. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten")
             await member_guild.edit(nick=fullname)
+        await browser.close()
     except:
         channel = bot.get_channel(555823680148602901)
         await channel.send(f"Something went wrong during login for {member.mention}")
-        await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':10000})
-        await member.send("Wrong username or password. Please try again by going into #välkommen.")
         channel = bot.get_channel(557509634437677056)
         async for elem in channel.history():
             await elem.remove_reaction("✅",member)
+        await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':10000})
+        await member.send("Wrong username or password. Please try again by going into #välkommen.")
         await browser.close()
 async def isAdmin(member):
     admin = False
