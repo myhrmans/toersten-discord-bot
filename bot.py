@@ -133,8 +133,10 @@ async def pi(ctx, *, args):
 
 @bot.command()
 async def welcome_message(ctx):
-    channel = bot.get_channel(557509634437677056)
-    await channel.send("Welcome to ÖDETs Discord channel!\n\nThe main purpose of this channel is for students to discuss courses, exams and labs etc.\nMain language is Swedish but all of the documentation is written in english since there might be x-change students discussing in some of the courses.\nTo use this channel you must first authenticate that you're a student of ÖDET, this by reacting on this message. By authenticating to this channel you accept the following community guidelines:\n\n- No harassment\n- No hate or racism\n- No cheating\n- Keep good tone to each other\n- You need to follow Swedish laws such as 'Diskrimineringslagen'.\n\nWe are all here to help each other and we all want a nice community to discuss our studies, if you can't follow these simple rules you will get banned.\n\n---------------------------------------------------------------------------------------------------------------\n\nCheck the README.md file in the github repository for commands on how to interact with Toersten. If there's any problems, don't hesitate to contact the channel admins! If you want to contribute to the community or with development, feel free to contact us! Especially if you have experience with Python and JavaScript.\n\n//Admins\nP.S Toersten vakar över oss alla, ty han är den allsmäktige!")
+    member = ctx.message.author
+    if isAdmin(member):
+        channel = bot.get_channel(557509634437677056)
+        await channel.send("Welcome to ÖDETs Discord channel!\n\nThe main purpose of this channel is for students to discuss courses, exams and labs etc.\nMain language is Swedish but all of the documentation is written in english since there might be x-change students discussing in some of the courses.\nTo use this channel you must first authenticate that you're a student of ÖDET, this by reacting on this message. By authenticating to this channel you accept the following community guidelines:\n\n- No harassment\n- No hate or racism\n- No cheating\n- Keep good tone to each other\n- You need to follow Swedish laws such as 'Diskrimineringslagen'.\n\nWe are all here to help each other and we all want a nice community to discuss our studies, if you can't follow these simple rules you will get banned.\n\n---------------------------------------------------------------------------------------------------------------\n\nCheck the README.md file in the github repository for commands on how to interact with Toersten. If there's any problems, don't hesitate to contact the channel admins! If you want to contribute to the community or with development, feel free to contact us! Especially if you have experience with Python and JavaScript.\n\n//Admins\nP.S Toersten vakar över oss alla, ty han är den allsmäktige!")
 
 @bot.command()
 async def report(ctx, member:discord.User = None):
@@ -194,6 +196,8 @@ async def unregister(ctx, member:discord.User = None):
     await member.edit(nick=None)
     await member.send(f"Name removed")
     await member.send(f"All information about you are now removed from this discord channel. Have a nice day! :beers:")
+    time_unreg = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    await channel.send(f"-----\nUser: {member.mention}\nAction: Unregister\nTime: {time_unreg}\n-----")
 
 @bot.command()
 async def version(ctx):
@@ -366,6 +370,9 @@ async def ladok(user):
             await member.send(f"Welcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Halmstad Högskola. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten")
             await member_guild.edit(nick=fullname)
         await browser.close()
+        time_unreg = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        n_couses = len(course_list_ladok)
+        await channel.send(f"-----\nUser: {member.mention}\nAction: Register\nTime: {time_unreg}\nProgram: {program_name}\n Courses: {n_couses}\n-----")
     except:
         channel = bot.get_channel(555823680148602901)
         await channel.send(f"Something went wrong during login for {member.mention}")
@@ -446,7 +453,9 @@ async def todo(ctx, member:discord.User = None):
 
 @bot.command()
 async def help(ctx):
-    
+    """
+        Prints a message with the current commands.
+    """
     try:
         File = open("./README.md", "r+", encoding="UTF-8")
         helpFile = File.read()
