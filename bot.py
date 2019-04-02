@@ -373,11 +373,11 @@ async def ladok(user):
         await browser.close()
         time_unreg = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         n_couses = len(course_list_ladok)
+        channel = bot.get_channel(562647258722598935)
         await channel.send(f"-----\nUser: {member.mention}\nName: {fullname}\nAction: Register\nTime: {time_unreg}\nProgram: {program_name}\nCourses: {n_couses}\n-----")
     except:
         channel = bot.get_channel(555823680148602901)
         await channel.send(f"Something went wrong during login for {member.mention}")
-        channel = bot.get_channel(562647258722598935)
         async for elem in channel.history():
             await elem.remove_reaction("✅",member)
         await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':10000})
