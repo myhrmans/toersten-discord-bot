@@ -205,7 +205,7 @@ async def ladok(user):
     browser = ""
     #---- Launch browser ----#
     try:
-        browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser'})
+        browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser','args': '--no-sandbox'})
         page = await browser.newPage()
         #---- Navigate browser to ladok ----#
         await page.goto('https://www.student.ladok.se/')
