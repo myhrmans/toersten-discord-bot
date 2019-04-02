@@ -174,7 +174,7 @@ async def show(ctx, *, args):
 
 @bot.event
 async def on_raw_reaction_add(payload):
-    if(payload.message_id == 558226835599785984):
+    if(payload.message_id == 562730849800421384):
         member = bot.get_user(payload.user_id)
         if(str(payload.emoji) == "✅"):
             secret = secrets.token_urlsafe(32)
