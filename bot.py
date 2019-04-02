@@ -148,8 +148,7 @@ async def report(ctx, member:discord.User = None):
     await member.send(f"Beskriv ditt problem:")
     message = await bot.wait_for('message', check=pred)
     channel = bot.get_channel(555823680148602901)
-    await channel.send(f"A new bug was reported by {member.mention}")
-    await channel.send(f"Description: {message.content}")
+    await channel.send(f"A new bug was reported by {member.mention}\nDescription: {message.content}")
 
 @bot.command()
 async def show(ctx, *, args):
@@ -180,9 +179,7 @@ async def on_raw_reaction_add(payload):
             secret = secrets.token_urlsafe(32)
             register_list.append(user_register(member,secret))
             await member.create_dm()
-            await member.send(f"Thanks for accepting the rules of this server. You will now get a URL to authenticate yourself against.")
-            await member.send(f"To authenticate open this website: https://odethh.se/register/?ID={secret}")
-            await member.send(f"Once you're done with this you will have access to your classes.")
+            await member.send(f"Thanks for accepting the rules of this server. You will now get a URL to authenticate yourself against.\nTo authenticate open this website: https://odethh.se/register/?ID={secret}\nOnce you're done with this you will have access to your classes.")
         else:
             channel = bot.get_channel(payload.channel_id)
             async for elem in channel.history():
@@ -265,7 +262,7 @@ async def ladok(user):
     except:
         await channel.send(f"Something went wrong during selecting next step (4) for {member.mention}")
     try:
-        await page.waitForSelector('div#navigation-first-meny div > ladok-inloggad-student', options={'timeout':10000})
+        await page.waitForSelector('div#navigation-first-meny div > ladok-inloggad-student', options={'timeout':4500})
             #---- Get name ----#
         element = await page.querySelector('div#navigation-first-meny div > ladok-inloggad-student')
         name = await page.evaluate('(element) => element.textContent', element)
@@ -406,7 +403,7 @@ async def ladok(user):
     except Exception as e:
         print(e)
         channel = bot.get_channel(555823680148602901)
-        await channel.send(f"Something went wrong during login for {member.mention}\n Error message: \n{e}")
+        await channel.send(f"Something went wrong during login for {member.mention}\nError message: \n{e}")
         async for elem in channel.history():
             await elem.remove_reaction("✅",member)
         await member.send("Wrong username or password. Please try again by going into #välkommen.")
