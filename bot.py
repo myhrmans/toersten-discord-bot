@@ -393,7 +393,7 @@ async def ladok(user):
             print(course_list_id)
             role_program = courses_id[course_int_id]
             print(role_program)
-            role_disc = guild.get_role(role_program)
+            role_disc = guild.get_role(int(role_program))
             await member_guild.add_roles(role_disc)
         await browser.close()
         time_unreg = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
