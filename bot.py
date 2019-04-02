@@ -194,13 +194,10 @@ async def unregister(ctx, member:discord.User = None):
     channels = bot.get_all_channels()
     for channel in channels:
         await channel.set_permissions(member, overwrite=None)
-    await member.send(f"All channels removed")
     for idx, val in enumerate(member.roles):
         if(idx!=0):
             await member.remove_roles(val,reason="Called for unregister")
-    await member.send(f"All roles removed")
     await member.edit(nick=None)
-    await member.send(f"Name removed")
     await member.send(f"All information about you are now removed from this discord channel. Have a nice day! :beers:")
     time_unreg = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     channel = bot.get_channel(562647258722598935)
@@ -409,10 +406,9 @@ async def ladok(user):
     except Exception as e:
         print(e)
         channel = bot.get_channel(555823680148602901)
-        await channel.send(f"Something went wrong during login for {member.mention}")
+        await channel.send(f"Something went wrong during login for {member.mention}\n Error message: \n{e}")
         async for elem in channel.history():
             await elem.remove_reaction("✅",member)
-        await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':10000})
         await member.send("Wrong username or password. Please try again by going into #välkommen.")
         await browser.close()
 async def isAdmin(member):
