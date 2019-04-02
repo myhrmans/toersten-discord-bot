@@ -356,11 +356,25 @@ async def ladok(user):
             4: "553999707689451532",
             5: "553999955228884993",
         }
-        guild = bot.get_guild(547454095360000011)
-        member_guild = guild.get_member(member.id)
+
         if program_name not in program_list:
             topyear = 0
-        else:
+        role = years[topyear]
+        guild = bot.get_guild(547454095360000011)
+        member_guild = guild.get_member(member.id)
+        years_text = {
+            1: "1st",
+            2: "2nd",
+            3: "3th",
+            4: "4th",
+            5: "5th"
+        }
+        if(isOdet==1 and topyear!=0):
+            role_disc = guild.get_role(int(role))
+            await member_guild.add_roles(role_disc)
+            yr = years_text[topyear]
+            await member.send(f"-----\nWelcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Halmstad Högskola. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten\n-----")
+            await member_guild.edit(nick=fullname)
             courses_name = {
                 1: 'Computer Science and Engineering',
                 2: 'Computer Engineer',
@@ -381,28 +395,13 @@ async def ladok(user):
             print(role_program)
             role_disc = guild.get_role(role_program)
             await member_guild.add_roles(role_disc)
-
-        role = years[topyear]
-
-        years_text = {
-            1: "1st",
-            2: "2nd",
-            3: "3th",
-            4: "4th",
-            5: "5th"
-        }
-        if(isOdet==1 and topyear!=0):
-            role_disc = guild.get_role(int(role))
-            await member_guild.add_roles(role_disc)
-            yr = years_text[topyear]
-            await member.send(f"-----\nWelcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Halmstad Högskola. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten\n-----")
-            await member_guild.edit(nick=fullname)
         await browser.close()
         time_unreg = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         n_couses = len(course_list_ladok)
         channel = bot.get_channel(562647258722598935)
         await channel.send(f"-----\nUser: {member.mention}\nName: {fullname}\nAction: Register\nTime: {time_unreg}\nProgram: {program_name}\nCourses: {n_couses}\n-----")
-    except:
+    except Exception as e:
+        print(e)
         channel = bot.get_channel(555823680148602901)
         await channel.send(f"Something went wrong during login for {member.mention}")
         async for elem in channel.history():
