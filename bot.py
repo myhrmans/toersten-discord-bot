@@ -190,8 +190,11 @@ async def unregister(ctx, member:discord.User = None):
     for channel in channels:
         await channel.set_permissions(member, overwrite=None)
     await member.send(f"All channels removed")
+    print(member.roles)
     list_roles = member.roles[1:]
-    await member.remove_roles(member.roles)
+    print(list_roles)
+    print(list_roles.id)
+    await member.remove_roles(list_roles)
     await member.send(f"All roles removed")
     await member.edit(nick=None)
     await member.send(f"Name removed")
