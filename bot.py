@@ -197,6 +197,7 @@ async def unregister(ctx, member:discord.User = None):
     await member.send(f"Name removed")
     await member.send(f"All information about you are now removed from this discord channel. Have a nice day! :beers:")
     time_unreg = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    channel = bot.get_channel(562647258722598935)
     await channel.send(f"-----\nUser: {member.mention}\nAction: Unregister\nTime: {time_unreg}\n-----")
 
 @bot.command()
@@ -372,11 +373,11 @@ async def ladok(user):
         await browser.close()
         time_unreg = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         n_couses = len(course_list_ladok)
-        await channel.send(f"-----\nUser: {member.mention}\nAction: Register\nTime: {time_unreg}\nProgram: {program_name}\n Courses: {n_couses}\n-----")
+        await channel.send(f"-----\nUser: {member.mention}\nAction: Register\nTime: {time_unreg}\nProgram: {program_name}\nCourses: {n_couses}\n-----")
     except:
         channel = bot.get_channel(555823680148602901)
         await channel.send(f"Something went wrong during login for {member.mention}")
-        channel = bot.get_channel(557509634437677056)
+        channel = bot.get_channel(562647258722598935)
         async for elem in channel.history():
             await elem.remove_reaction("✅",member)
         await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':10000})
