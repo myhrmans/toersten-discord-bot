@@ -188,13 +188,10 @@ async def unregister(ctx, member:discord.User = None):
     channels = bot.get_all_channels()
     for channel in channels:
         await channel.set_permissions(member, overwrite=None)
-    await member.send(f"All channels removed")
     for idx, val in enumerate(member.roles):
         if(idx!=0):
             await member.remove_roles(val,reason="Called for unregister")
-    await member.send(f"All roles removed")
     await member.edit(nick=None)
-    await member.send(f"Name removed")
     await member.send(f"All information about you are now removed from this discord channel. Have a nice day! :beers:")
     time_unreg = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     channel = bot.get_channel(562647258722598935)
