@@ -182,20 +182,13 @@ async def on_raw_reaction_add(payload):
 @bot.command()
 async def unregister(ctx, member:discord.User = None):
     member = ctx.message.author
-    message = ctx.message
-    def pred(m):
-        return m.author == message.author
     await member.create_dm()
     channels = bot.get_all_channels()
     for channel in channels:
         await channel.set_permissions(member, overwrite=None)
     await member.send(f"All channels removed")
-    print(member.roles)
-    list_roles = member.roles[1:]
-    list_roles_id = []
-    for role in list_roles:
-        list_roles_id.append(role.id)
-    await member.remove_roles(list_roles_id)
+    for role in member.roles:
+        await member.remove_roles(role,reason="Called for unregister")
     await member.send(f"All roles removed")
     await member.edit(nick=None)
     await member.send(f"Name removed")
