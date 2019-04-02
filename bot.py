@@ -376,8 +376,10 @@ async def ladok(user):
                 5: "554057912989777952"
             }
             course_int_id = getKeyByValue(courses_name, program_name)
+            print(course_list_id)
             role_program = courses_id[course_int_id]
-            role_disc = guild.get_role(int(course_int_id))
+            print(role_program)
+            role_disc = guild.get_role(role_program)
             await member_guild.add_roles(role_disc)
 
         role = years[topyear]
