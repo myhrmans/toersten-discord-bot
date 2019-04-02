@@ -368,16 +368,16 @@ async def ladok(user):
             role_disc = guild.get_role(int(role))
             await member_guild.add_roles(role_disc)
             yr = years_text[topyear]
-            await member.send(f"Welcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Halmstad Högskola. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten")
+            await member.send(f"-----\nWelcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Halmstad Högskola. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten\n-----")
             await member_guild.edit(nick=fullname)
         await browser.close()
         time_unreg = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         n_couses = len(course_list_ladok)
+        channel = bot.get_channel(562647258722598935)
         await channel.send(f"-----\nUser: {member.mention}\nName: {fullname}\nAction: Register\nTime: {time_unreg}\nProgram: {program_name}\nCourses: {n_couses}\n-----")
     except:
         channel = bot.get_channel(555823680148602901)
         await channel.send(f"Something went wrong during login for {member.mention}")
-        channel = bot.get_channel(562647258722598935)
         async for elem in channel.history():
             await elem.remove_reaction("✅",member)
         await page.waitForSelector('div > div.alert.alert-danger', options={'timeout':10000})
