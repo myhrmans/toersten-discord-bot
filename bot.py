@@ -160,16 +160,22 @@ async def report(ctx, member:discord.User = None):
 async def show(ctx, *, args):
     if ("wednesday" in args) or ("dudes" in args):
         await ctx.channel.send(f"https://www.youtube.com/watch?v=V37A21Mr7eQ")
-    if ("ok" in args) or ("oke" in args) or ("okej" in args) or ("okay" in args):
+    elif ("ok" in args) or ("oke" in args) or ("okej" in args) or ("okay" in args):
         await ctx.channel.send(f"https://www.youtube.com/watch?v=80Rdk6h7sHo")
-    if ("hot" in args) or ("willy" in args):
+    elif ("hot" in args) or ("willy" in args):
         await ctx.channel.send(f"https://www.youtube.com/watch?v=iRjUvXoyojw")
-    if "breakfast" in args:
+    elif "breakfast" in args:
         await ctx.channel.send(f"https://www.youtube.com/watch?v=cgtxdMSCjZk")
-    if ("friday" in args) or ("rebecca" in args) or ("black" in args):
+    elif ("friday" in args) or ("rebecca" in args) or ("black" in args):
         await ctx.channel.send(f"https://www.youtube.com/watch?v=kfVsfOSbJY0")
-    if ("ödet" in args) or ("livet" in args) or ("nordman" in args):
+    elif ("ödet" in args) or ("livet" in args) or ("nordman" in args):
         await ctx.channel.send(f"https://www.youtube.com/watch?v=ehORcoh7fbI")
+    elif "brittmarie" in args:
+        await ctx.channel.send(f"https://www.youtube.com/watch?v=w5MTdkPgKc8")
+    elif "kazoo" in args:
+        await ctx.channel.send(f"https://www.youtube.com/watch?v=cRpdIrq7Rbo")
+    else:
+        await ctx.channel.send(f"Sorry. The only thing i could find was this beer! 🍺")
 
 @bot.event
 async def on_raw_reaction_add(payload):
