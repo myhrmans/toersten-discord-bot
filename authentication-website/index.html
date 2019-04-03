@@ -276,7 +276,7 @@
                       Login
                     </button>
                   </div>
-                  <a href="terms_and_services.txt" target="_blank" id="terms-click">By logging in you accept our terms and services</a
+                  <a href="terms" target="_blank" id="terms-click">By logging in you accept our terms and services</a
                   ><span class="clearfix"></span>
                 </div>
               </div>
@@ -290,13 +290,6 @@
 				  </script>
 			<script>
 					$(document).ready(function(){
-            $("*").click(function(){
-              if($(this).attr("id") == "terms-click" || $(this).attr("id") == "terms-container"){
-                $("#terms-container").fadeIn();
-              }else if($(this).attr("id") != "terms-container"){
-                $("#terms-container").hide();
-              }
-            });
 						// click on button submit
 						$("#submit").on('click', function(){
             $("#formthing").hide();
