@@ -1,0 +1,77 @@
+<h1 id="toerstendiscordbot">toersten-discord-bot</h1>
+
+<p>Toersten daily task is to drink beer and handle the people in Ödets discord! </p>
+
+<h2 id="instructions">Instructions</h2>
+
+<p>When doing development run the command in the main folder to start the server:</p>
+
+<pre><code class="python language-python">python bot.py ["ID of bot, e.g. 0001"] ["password"]
+</code></pre>
+
+<p>To be able to run the bot locally you need the following moduals:</p>
+
+<ul>
+<li>pyppeteer==0.0.18</li>
+
+<li>discord#rewrite</li>
+
+<li>gpiozero
+All modules are installed via pip, but since the discor#rewrite isn't hosted on official repositorys you have to use this command instead: </li>
+</ul>
+
+<pre><code class="python language-python">pip install -U git+https://github.com/Rapptz/discord.py@rewrite
+</code></pre>
+
+<h2 id="currentfeatures">Current Features</h2>
+
+<ul>
+<li>Check latency</li>
+
+<li>Check version</li>
+
+<li>React on certian comments</li>
+
+<li>Get course information from Ladok</li>
+
+<li>Bug report with notification to admins</li>
+
+<li>Locals bots for development and hosted bot for service</li>
+
+<li>Encryted bot IDs</li>
+</ul>
+
+<h2 id="todo">Todo</h2>
+
+<ul>
+<li>Automatically set user privileges according to their course attendance on Blackboard</li>
+
+<li>Create Youtube-playlist with Nolle-listan</li>
+
+<li>Update courses which has no courseID yet</li>
+</ul>
+
+<h2 id="commands">Commands</h2>
+
+<p>| Command       | Description                                   |
+|---------------|-----------------------------------------------|
+| 7: ping       | Check latency                                 |
+| 7: version    | Check bot version                             |
+| 7: courses    | Returns course attendance from Blackboard     |
+| 7: report     | To report a bug or issue to admins            |
+| 7: register   | To get courseID from Blackboard               |
+| 7: help       | Returns commands to write                     |
+| 7: todo       | Returns the todo-list (admins only)           |
+| 7: add        | Adds a string to the todo-list (admin only)   |</p>
+
+<h2 id="contributors">Contributors</h2>
+
+<ul>
+<li><a href="https://github.com/myhrmans/">Martin Myhrman</a></li>
+
+<li><a href="https://github.com/kallekj/">Karl-Johan Djervbrant</a></li>
+
+<li><a href="https://github.com/AndreasH96/">Andreas Häggström</a></li>
+
+<li><a href="https://github.com/filipgoranson/">Filip Göranson</a></li>
+</ul>
