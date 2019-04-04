@@ -365,7 +365,7 @@ async def ladok(user):
         years_text = {
             1: "1st",
             2: "2nd",
-            3: "3th",
+            3: "3rd",
             4: "4th",
             5: "5th"
         }
@@ -373,7 +373,7 @@ async def ladok(user):
             role_disc = guild.get_role(int(role))
             await member_guild.add_roles(role_disc)
             yr = years_text[topyear]
-            await member.send(f"-----\nWelcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Halmstad Högskola. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten\n-----")
+            await member.send(f"-----\nWelcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Högskolan i Halmstad. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten\n-----")
             await member_guild.edit(nick=fullname)
             courses_name = {
                 1: 'Computer Science and Engineering',
