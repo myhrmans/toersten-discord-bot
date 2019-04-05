@@ -36,7 +36,7 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 
 - Automatically set user privileges according to their course attendance on Blackboard
 - Create Youtube-playlist with Nolle-listan
-- Update courses which has no courseID yet
+- Update courses which has no courseID yet 
 
 ## Commands
 
