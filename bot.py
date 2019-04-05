@@ -179,7 +179,7 @@ async def on_raw_reaction_add(payload):
             secret = secrets.token_urlsafe(32)
             register_list.append(user_register(member,secret))
             await member.create_dm()
-            await member.send(f"Thanks for accepting the rules of this server. You will now get a URL to authenticate yourself against.\nTo authenticate open this website: https://odethh.se/register/?ID={secret}\nOnce you're done with this you will have access to your classes.")
+            await member.send(f"Thanks for accepting the rules of this server. You will now get a URL to authenticate yourself against.\nTo authenticate open this website: https://odethh.se/register/?ID={secret}\nThis link will only work one time. If you fail for some reason you will have to press the :white_check_mark: in #welcome again. Once you're done with this you will have access to your classes.")
         else:
             channel = bot.get_channel(payload.channel_id)
             async for elem in channel.history():
