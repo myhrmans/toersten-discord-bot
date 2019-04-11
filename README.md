@@ -31,7 +31,7 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 - Locals bots for development and hosted bot for service
 - Encryted bot IDs
 
-## Todo
+## Todo 
 
 - Automatically set user privileges according to their course attendance on Blackboard
 - Create Youtube-playlist with Nolle-listan
