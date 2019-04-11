@@ -50,6 +50,24 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 | 7: help       | Returns commands to write                     |
 | 7: todo       | Returns the todo-list (admins only)           |
 | 7: add        | Adds a string to the todo-list (admin only)   |
+| 7: show       | Shows various helpful link/source             |
+
+## Options for show
+| Command                         |
+|---------------------------------|
+| 7: show wednesday/dudes         |
+| 7: show ok/oke/okej/okay        |
+| 7: show hot/willy               |
+| 7: show breakfast               |
+| 7: show friday/rebecca/black    |
+| 7: show ödet/livet/nordman      |
+| 7: show brittmarie              |
+| 7: show kazoo                   |
+| 7: show subgap                  |
+| 7: show hinkenhelp              |
+| 7: show git/github              |
+| 7: show help                    |
+| 7: show topmeme                 |
 
 ## Contributors
 
