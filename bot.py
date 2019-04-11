@@ -286,7 +286,7 @@ async def ladok(user):
         #---- Get current courses ----#
         try:
             await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-pagaende-kurslista > ladok-kurser > div', options={'timeout':10000})
-            current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-pagaende-kurslista > div')
+            current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-pagaende-kurslista > ladok-kurser > div')
             for element in current:
                     element = await element.querySelector('div > ladok-kurs-i-lista > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
                     element_text = await page.evaluate('(element) => element.textContent', element)
@@ -390,9 +390,7 @@ async def ladok(user):
                 5: "554057912989777952"
             }
             course_int_id = getKeyByValue(courses_name, program_name)
-            print(course_list_id)
             role_program = courses_id[course_int_id]
-            print(role_program)
             role_disc = guild.get_role(int(role_program))
             await member_guild.add_roles(role_disc)
         await browser.close()
