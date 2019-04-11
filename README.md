@@ -24,7 +24,7 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 
 ## Current Features
 
-- Check latency
+- Check latency 
 - Check version
 - React on certian comments
 - Get course information from Ladok
