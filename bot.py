@@ -285,10 +285,10 @@ async def ladok(user):
             await channel.send(f"Something went wrong during getting program name for {member.mention}")
         #---- Get current courses ----#
         try:
-            await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
+            await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-pagaende-kurslista > ladok-kurser > div', options={'timeout':10000})
             current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-pagaende-kurslista > div')
             for element in current:
-                    element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+                    element = await element.querySelector('div > ladok-kurs-i-lista > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
                     element_text = await page.evaluate('(element) => element.textContent', element)
                     courseID = element_text.split("|")
                     courseID = courseID[2]
@@ -298,9 +298,9 @@ async def ladok(user):
             await channel.send(f"Something went wrong during getting current courses for {member.mention}")
         #---- Get uncompleted courses ----#
         try:
-            uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > div > ladok-kommande-kurslista > div')
+            uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > div > ladok-oavslutade-kurslista > ladok-kurser > div')
             for element in uncompleted:
-                element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+                element = await element.querySelector('div > ladok-kurs-i-lista > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
                 element_text = await page.evaluate('(element) => element.textContent', element)
                 courseID = element_text.split("|")
                 courseID = courseID[2]
@@ -311,9 +311,9 @@ async def ladok(user):
 
         #---- Get self-contained courses ----#
         try:
-            self_contained_courses = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(4) > ladok-kommande-kurslista > div')
+            self_contained_courses = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(4) > ladok-oavslutade-kurslista > ladok-kurser > div')
             for element in self_contained_courses:
-                element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+                element = await element.querySelector('div > ladok-kurs-i-lista > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
                 element_text = await page.evaluate('(element) => element.textContent', element)
                 courseID = element_text.split("|")
                 courseID = courseID[2]
@@ -347,7 +347,7 @@ async def ladok(user):
                         await channel.send(f"Course ID: {courseID}")
                         await channel.send(f"User had program: {program_name}")
         else: 
-            await member.send(f"No courses found which associates with ÖDET. Looks like you are from {program_name}. This discord is only for people in ÖDET.")
+            await member.send(f"No courses found which associates with ÖDET. Looks like you are reading {program_name}. This discord is only for people in ÖDET.")
         years = {
             0: "0",
             1: "549996194898771978",
