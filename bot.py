@@ -173,6 +173,12 @@ async def show(ctx, *, args):
         await sendpewdiepieSubgap(ctx)
     elif "hinkenhelp" in args:
         await ctx.channel.send(f"http://dixon.hh.se/mikael/")
+    elif "help" in args:
+        await showhelp(ctx)
+    elif ("git" in args) or ("github" in args):
+        await ctx.channel.send(f"Source of project is: https://github.com/myhrmans/toersten-discord-bot")
+    elif "topmeme" in args:
+        await sendProgrammerHumorTopMeme(ctx)
     else:
         await ctx.channel.send(f"Sorry. The only thing i could find was this beer! 🍺")
 
@@ -193,7 +199,19 @@ async def sendpewdiepieSubgap(ctx):
         await ctx.channel.send("Tseries is currently {} subscribers ahead of Pewdiepie".format(str(tseriesSubcount - pewdiepieSubcount)))
     else:
         await ctx.channel.send("Pewdiepie is currently {} subscribers ahead of T-series".format(str(pewdiepieSubcount - tseriesSubcount)))
-
+@bot.event 
+async def sendProgrammerHumorTopMeme(ctx):
+    browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser','args': '--no-sandbox'})
+    page = await browser.newPage()
+    #---- Navigate browser to ladok ----#
+    await page.goto('https://www.reddit.com/r/programmerhumor/top/')
+    await page.setViewport({'width':1024, 'height': 870})
+    try:
+        await page.waitForSelector("#t3_bbn908", options={'timeout':10000})
+        await page.click("#t3_bbn908")
+        await ctx.channel.send("Top meme from /r/programmerhumor of today is: {}".format(str(page.url)))
+    except:
+            await ctx.channel.send(f"Something went wrong")
 @bot.event
 async def on_raw_reaction_add(payload):
     if(payload.message_id == 562730849800421384):
@@ -512,6 +530,19 @@ async def help(ctx):
         helpFileList = helpFile.split(sep="## Commands")
         commands = helpFileList[1].split("##")[0]
         await ctx.channel.send(f"``` \n ## Commands \n {commands} \n ```")
+    except:
+        await ctx.channel.send(f"Error: Cant find README.md, contact admins!")
+
+async def showhelp(ctx):
+    """
+        Prints a message with the current commands.
+    """
+    try:
+        File = open("./README.md", "r+", encoding="UTF-8")
+        showhelpFile = File.read()
+        showhelpFileList = showhelpFile.split(sep="## Options for show")
+        commands = showhelpFileList[1].split("##")[0]
+        await ctx.channel.send(f"``` \n ## Options for show \n {commands} \n ```")
     except:
         await ctx.channel.send(f"Error: Cant find README.md, contact admins!")
 
