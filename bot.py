@@ -273,10 +273,10 @@ async def ladok(user):
         firstname = firstname[1:-1]
         lastname = fullname[0]
         fullname = firstname + "" + lastname
-
+        print(fullname)
         #---- Get program name ----#
         try:
-            element = await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-paketeringlink > h3', options={'timeout':10000})
+            element = await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-paketeringlink > h3', options={'timeout':10000})
             program_name = await page.evaluate('(element) => element.textContent', element)
             program_name = program_name.split("|")
             program_name = program_name[0]
@@ -285,8 +285,8 @@ async def ladok(user):
             await channel.send(f"Something went wrong during getting program name for {member.mention}")
         #---- Get current courses ----#
         try:
-            await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
-            current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
+            await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
+            current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-pagaende-kurslista > div')
             for element in current:
                     element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
                     element_text = await page.evaluate('(element) => element.textContent', element)
@@ -298,7 +298,7 @@ async def ladok(user):
             await channel.send(f"Something went wrong during getting current courses for {member.mention}")
         #---- Get uncompleted courses ----#
         try:
-            uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > ladok-oavslutade-kurser-i-struktur > div > ladok-kommande-kurslista > div')
+            uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > div > ladok-kommande-kurslista > div')
             for element in uncompleted:
                 element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
                 element_text = await page.evaluate('(element) => element.textContent', element)
