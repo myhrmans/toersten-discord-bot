@@ -10,7 +10,6 @@ When doing development run the command in the main folder to start the server:
 
 python bot.py ["ID of bot, e.g. 0001"] ["password"]
 ```
-
 To be able to run the bot locally you need the following moduals:
 
 - pyppeteer==0.0.18
