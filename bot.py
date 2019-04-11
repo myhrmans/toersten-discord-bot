@@ -30,7 +30,7 @@ course_list_id = []
 program_list = []
 bot_version = 0.00
 
-
+isLocalBot = 0
 class course:
     def __init__(self, courseID, channelID, year):
         self.courseID = courseID
@@ -92,7 +92,8 @@ async def on_ready():
     print(f"Serving: {len(bot.guilds)} guilds.")
     await bot.change_presence(status=discord.Status.online, activity=discord.Game(name="beerpong @ smålands!"))
     channel = bot.get_channel(560931911682490379)
-    await channel.send(f"I've rebooted, cheers! :beers: Running this commit: https://github.com/myhrmans/toersten-discord-bot/commit/{bot_version}")
+    if isLocalBot == 0:
+        await channel.send(f"I've rebooted, cheers! :beers: Running this commit: https://github.com/myhrmans/toersten-discord-bot/commit/{bot_version}")
 
 
 @bot.command()
@@ -168,8 +169,30 @@ async def show(ctx, *, args):
         await ctx.channel.send(f"https://www.youtube.com/watch?v=w5MTdkPgKc8")
     elif "kazoo" in args:
         await ctx.channel.send(f"https://www.youtube.com/watch?v=cRpdIrq7Rbo")
+    elif "subgap" in args:
+        await sendpewdiepieSubgap(ctx)
+    elif "hinkenhelp" in args:
+        await ctx.channel.send(f"http://dixon.hh.se/mikael/")
     else:
         await ctx.channel.send(f"Sorry. The only thing i could find was this beer! 🍺")
+
+
+@bot.event
+async def sendpewdiepieSubgap(ctx):
+    #document.getElementById("subscriber-count").innerHTML.slice(0,document.getElementById("subscriber-count").innerHTML.length-13)
+    browser = await launch(options = {'headless': True})
+    page = await browser.newPage()
+
+    await page.goto("https://www.youtube.com/user/PewDiePie")
+    pewdiepieSubcount = await page.evaluate('document.getElementById("subscriber-count").innerHTML.slice(0,document.getElementById("subscriber-count").innerHTML.length-13)',force_expr=True)
+    pewdiepieSubcount =int( pewdiepieSubcount.replace("&nbsp;",""))
+    await page.goto("https://www.youtube.com/channel/UCq-Fj5jknLsUf-MWSy4_brA")
+    tseriesSubcount = await page.evaluate('document.getElementById("subscriber-count").innerHTML.slice(0,document.getElementById("subscriber-count").innerHTML.length-13)',force_expr=True)
+    tseriesSubcount = int(tseriesSubcount.replace("&nbsp;",""))
+    if pewdiepieSubcount < tseriesSubcount:
+        await ctx.channel.send("Tseries is currently {} subscribers ahead of Pewdiepie".format(str(tseriesSubcount - pewdiepieSubcount)))
+    else:
+        await ctx.channel.send("Pewdiepie is currently {} subscribers ahead of T-series".format(str(pewdiepieSubcount - tseriesSubcount)))
 
 @bot.event
 async def on_raw_reaction_add(payload):
@@ -547,6 +570,7 @@ if(platform.uname()[1]=="raspberrypi"):
         print(f"Fail bot: {e}")
 #--------- TO START BOT LOCAL BOT 0001 ----------------
 elif(sys.argv[1] == "0001"):
+    isLocalBot = 1
     # SPECAIL CASE IF LOCAL BOT ISN'T RUNNING ON UNIX SYSTEM
     if(platform.uname()[0] != "Linux"):
         try:
@@ -579,6 +603,7 @@ elif(sys.argv[1] == "0001"):
             print(f"Fail bot: {e}")
 #--------- TO START BOT LOCAL BOT 0002 ----------------
 elif(sys.argv[1] == "0010"):
+    isLocalBot =1
     # SPECAIL CASE IF LOCAL BOT ISN'T RUNNING ON UNIX SYSTEM
     if(platform.uname()[0] != "Linux"):
         try:
