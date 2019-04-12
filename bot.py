@@ -207,11 +207,13 @@ async def sendProgrammerHumorTopMeme(ctx):
     await page.goto('https://www.reddit.com/r/programmerhumor/top/')
     await page.setViewport({'width':1024, 'height': 870})
     try:
-        await page.waitForSelector("#t3_bbn908", options={'timeout':10000})
-        await page.click("#t3_bbn908")
+        await page.waitForSelector("#SHORTCUT_FOCUSABLE_DIV > div:nth-child(4) > div > div > div > div.s1ljaa4r-1.kgVjDg > div.s1ljaa4r-5.fmkWQd > div.sdccme-0.bSprja > div.rpBJOHq2PR60pnwJlUyP0.s1rcgrht-0.eEVuIz > div:nth-child(1)", options={'timeout':10000})
+        await page.click("#SHORTCUT_FOCUSABLE_DIV > div:nth-child(4) > div > div > div > div.s1ljaa4r-1.kgVjDg > div.s1ljaa4r-5.fmkWQd > div.sdccme-0.bSprja > div.rpBJOHq2PR60pnwJlUyP0.s1rcgrht-0.eEVuIz > div:nth-child(1)")
         await ctx.channel.send("Top meme from /r/programmerhumor of today is: {}".format(str(page.url)))
     except:
             await ctx.channel.send(f"Something went wrong")
+
+           
 @bot.event
 async def on_raw_reaction_add(payload):
     if(payload.message_id == 562730849800421384):
