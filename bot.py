@@ -222,7 +222,7 @@ async def on_raw_reaction_add(payload):
             secret = secrets.token_urlsafe(32)
             register_list.append(user_register(member,secret))
             await member.create_dm()
-            await member.send(f"Thanks for accepting the rules of this server. You will now get a URL to authenticate yourself against.\nTo authenticate open this website: https://odethh.se/register/?ID={secret}\nOnce you're done with this you will have access to your classes.")
+            await member.send(f"Thanks for accepting the rules of this server. You will now get a URL to authenticate yourself against.\nTo authenticate open this website: https://odethh.se/register/?ID={secret}\nThis link will only work one time. If you fail for some reason you will have to press the :white_check_mark: in #welcome again. Once you're done with this you will have access to your classes.")
         else:
             channel = bot.get_channel(payload.channel_id)
             async for elem in channel.history():
@@ -316,10 +316,10 @@ async def ladok(user):
         firstname = firstname[1:-1]
         lastname = fullname[0]
         fullname = firstname + "" + lastname
-
+        print(fullname)
         #---- Get program name ----#
         try:
-            element = await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-paketeringlink > h3', options={'timeout':10000})
+            element = await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-paketeringlink > h3', options={'timeout':10000})
             program_name = await page.evaluate('(element) => element.textContent', element)
             program_name = program_name.split("|")
             program_name = program_name[0]
@@ -328,10 +328,10 @@ async def ladok(user):
             await channel.send(f"Something went wrong during getting program name for {member.mention}")
         #---- Get current courses ----#
         try:
-            await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div', options={'timeout':10000})
-            current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > ladok-pagaende-kurser-i-struktur > div > ladok-pagaende-kurslista > div')
+            await page.waitForSelector('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-pagaende-kurslista > ladok-kurser > div', options={'timeout':10000})
+            current = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(1) > ladok-pagaende-kurser > div:nth-child(3) > div > ladok-pagaende-kurslista > ladok-kurser > div')
             for element in current:
-                    element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+                    element = await element.querySelector('div > ladok-kurs-i-lista > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
                     element_text = await page.evaluate('(element) => element.textContent', element)
                     courseID = element_text.split("|")
                     courseID = courseID[2]
@@ -341,9 +341,9 @@ async def ladok(user):
             await channel.send(f"Something went wrong during getting current courses for {member.mention}")
         #---- Get uncompleted courses ----#
         try:
-            uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > ladok-oavslutade-kurser-i-struktur > div > ladok-kommande-kurslista > div')
+            uncompleted = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(3) > div > ladok-oavslutade-kurslista > ladok-kurser > div')
             for element in uncompleted:
-                element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+                element = await element.querySelector('div > ladok-kurs-i-lista > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
                 element_text = await page.evaluate('(element) => element.textContent', element)
                 courseID = element_text.split("|")
                 courseID = courseID[2]
@@ -354,9 +354,9 @@ async def ladok(user):
 
         #---- Get self-contained courses ----#
         try:
-            self_contained_courses = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(4) > ladok-kommande-kurslista > div')
+            self_contained_courses = await page.querySelectorAll('div#ldk-main-wrapper > ng-component > ladok-aktuell > div.row > div:nth-child(3) > ladok-oavslutade-kurser > div:nth-child(4) > ladok-oavslutade-kurslista > ladok-kurser > div')
             for element in self_contained_courses:
-                element = await element.querySelector('div > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
+                element = await element.querySelector('div > ladok-kurs-i-lista > h4 > ladok-kurslink > div.ldk-visa-desktop > a')
                 element_text = await page.evaluate('(element) => element.textContent', element)
                 courseID = element_text.split("|")
                 courseID = courseID[2]
@@ -390,7 +390,7 @@ async def ladok(user):
                         await channel.send(f"Course ID: {courseID}")
                         await channel.send(f"User had program: {program_name}")
         else: 
-            await member.send(f"No courses found which associates with ÖDET. Looks like you are from {program_name}. This discord is only for people in ÖDET.")
+            await member.send(f"No courses found which associates with ÖDET. Looks like you are reading {program_name}. This discord is only for people in ÖDET.")
         years = {
             0: "0",
             1: "549996194898771978",
@@ -408,7 +408,7 @@ async def ladok(user):
         years_text = {
             1: "1st",
             2: "2nd",
-            3: "3th",
+            3: "3rd",
             4: "4th",
             5: "5th"
         }
@@ -416,7 +416,7 @@ async def ladok(user):
             role_disc = guild.get_role(int(role))
             await member_guild.add_roles(role_disc)
             yr = years_text[topyear]
-            await member.send(f"-----\nWelcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Halmstad Högskola. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten\n-----")
+            await member.send(f"-----\nWelcome to ÖDET Discord Channel. You, {fullname}, should now have full access to all your courses and from what we could understand you are reading the {yr} year at Högskolan i Halmstad. \nIf this is incorrect please contact the admins of the discord.  \nRemember the rules and enjoy they stay! \n//Toersten\n-----")
             await member_guild.edit(nick=fullname)
             courses_name = {
                 1: 'Computer Science and Engineering',
@@ -433,9 +433,7 @@ async def ladok(user):
                 5: "554057912989777952"
             }
             course_int_id = getKeyByValue(courses_name, program_name)
-            print(course_list_id)
             role_program = courses_id[course_int_id]
-            print(role_program)
             role_disc = guild.get_role(int(role_program))
             await member_guild.add_roles(role_disc)
         await browser.close()

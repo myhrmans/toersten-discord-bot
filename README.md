@@ -10,7 +10,6 @@ When doing development run the command in the main folder to start the server:
 
 python bot.py ["ID of bot, e.g. 0001"] ["password"]
 ```
-
 To be able to run the bot locally you need the following moduals:
 
 - pyppeteer==0.0.18
@@ -24,7 +23,7 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 
 ## Current Features
 
-- Check latency
+- Check latency 
 - Check version
 - React on certian comments
 - Get course information from Ladok
@@ -32,11 +31,11 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 - Locals bots for development and hosted bot for service
 - Encryted bot IDs
 
-## Todo
+## Todo 
 
 - Automatically set user privileges according to their course attendance on Blackboard
 - Create Youtube-playlist with Nolle-listan
-- Update courses which has no courseID yet
+- Update courses which has no courseID yet 
 
 ## Commands
 
@@ -44,15 +43,15 @@ pip install -U git+https://github.com/Rapptz/discord.py@rewrite
 |---------------|-----------------------------------------------|
 | 7: ping       | Check latency                                 |
 | 7: version    | Check bot version                             |
-| 7: courses    | Returns course attendance from Blackboard     |
 | 7: report     | To report a bug or issue to admins            |
-| 7: register   | To get courseID from Blackboard               |
+| 7: unregister | To remove all information from discord        |
 | 7: help       | Returns commands to write                     |
 | 7: todo       | Returns the todo-list (admins only)           |
 | 7: add        | Adds a string to the todo-list (admin only)   |
 | 7: show       | Shows various helpful link/source             |
 
 ## Options for show
+
 | Command                         |
 |---------------------------------|
 | 7: show wednesday/dudes         |
