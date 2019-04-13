@@ -18,6 +18,7 @@ import ssl
 import sys
 from threading import Thread
 import urllib.parse
+import requests
 
 if(platform.uname()[1]=="raspberrypi"):
     bot = commands.Bot(command_prefix="7: ", status=discord.Status.idle, activity=discord.Game(name="Halsar en åbro.."))
@@ -201,18 +202,10 @@ async def sendpewdiepieSubgap(ctx):
         await ctx.channel.send("Pewdiepie is currently {} subscribers ahead of T-series".format(str(pewdiepieSubcount - tseriesSubcount)))
 @bot.event 
 async def sendProgrammerHumorTopMeme(ctx):
-    browser = await launch(options = {'headless': True, 'executablePath': '/usr/bin/chromium-browser','args': '--no-sandbox'})
-    page = await browser.newPage()
-    #---- Navigate browser to ladok ----#
-    await page.goto('https://www.reddit.com/r/programmerhumor/top/')
-    await page.setViewport({'width':1024, 'height': 870})
-    try:
-        await page.waitForSelector("#SHORTCUT_FOCUSABLE_DIV > div:nth-child(4) > div > div > div > div.s1ljaa4r-1.kgVjDg > div.s1ljaa4r-5.fmkWQd > div.sdccme-0.bSprja > div.rpBJOHq2PR60pnwJlUyP0.s1rcgrht-0.eEVuIz > div:nth-child(1)", options={'timeout':10000})
-        await page.click("#SHORTCUT_FOCUSABLE_DIV > div:nth-child(4) > div > div > div > div.s1ljaa4r-1.kgVjDg > div.s1ljaa4r-5.fmkWQd > div.sdccme-0.bSprja > div.rpBJOHq2PR60pnwJlUyP0.s1rcgrht-0.eEVuIz > div:nth-child(1)")
-        await ctx.channel.send("Top meme from /r/programmerhumor of today is: {}".format(str(page.url)))
-    except:
-            await ctx.channel.send(f"Something went wrong")
-
+        data = requests.get("https://www.reddit.com/r/ProgrammerHumor.json?limit=1", headers = {'User-agent': 'Toersten'})
+        data = data.json()
+        link = data["data"]["children"][2]["data"]["url"]
+        await ctx.channel.send(f"Top meme from /r/programmerhumor of today is: {link}")
            
 @bot.event
 async def on_raw_reaction_add(payload):
@@ -595,8 +588,6 @@ if(platform.uname()[1]=="raspberrypi"):
         decryptedHost = base64.decodestring(xor_strings(bytes(masterEncrypted, encoding="UTF-8"), key)).decode("UTF-8")
         bot.run(decryptedHost)
         decryptedHost = 0
-        
-        bot.run(master)
     except Exception as e:
         print(f"Fail bot: {e}")
 #--------- TO START BOT LOCAL BOT 0001 ----------------
