@@ -596,7 +596,7 @@ if(platform.uname()[1]=="raspberrypi"):
         bot.run(decryptedHost)
         decryptedHost = 0
         
-        #bot.run(master)
+        bot.run(master)
     except Exception as e:
         print(f"Fail bot: {e}")
 #--------- TO START BOT LOCAL BOT 0001 ----------------
