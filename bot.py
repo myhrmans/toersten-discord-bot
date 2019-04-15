@@ -186,20 +186,18 @@ async def show(ctx, *, args):
 
 @bot.event
 async def sendpewdiepieSubgap(ctx):
+    key = "AIzaSyDLldX_e_RHl9JyfvCnZ5cG0Z9ahuXyNHI"
     #document.getElementById("subscriber-count").innerHTML.slice(0,document.getElementById("subscriber-count").innerHTML.length-13)
-    browser = await launch(options = {'headless': True})
-    page = await browser.newPage()
-
-    await page.goto("https://www.youtube.com/user/PewDiePie")
-    pewdiepieSubcount = await page.evaluate('document.getElementById("subscriber-count").innerHTML.slice(0,document.getElementById("subscriber-count").innerHTML.length-13)',force_expr=True)
-    pewdiepieSubcount =int( pewdiepieSubcount.replace("&nbsp;",""))
-    await page.goto("https://www.youtube.com/channel/UCq-Fj5jknLsUf-MWSy4_brA")
-    tseriesSubcount = await page.evaluate('document.getElementById("subscriber-count").innerHTML.slice(0,document.getElementById("subscriber-count").innerHTML.length-13)',force_expr=True)
-    tseriesSubcount = int(tseriesSubcount.replace("&nbsp;",""))
-    if pewdiepieSubcount < tseriesSubcount:
-        await ctx.channel.send("Tseries is currently {} subscribers ahead of Pewdiepie".format(str(tseriesSubcount - pewdiepieSubcount)))
+    name= "PewDiePie"
+    pew_data = requests.get("https://www.googleapis.com/youtube/v3/channels?part=statistics&forUsername="+name+"&key="+key, headers = {'User-agent': 'Toersten'})
+    pew_subs = int(pew_data.json()["items"][0]["statistics"]["subscriberCount"])
+    name= "TSeries"
+    t_data = requests.get("https://www.googleapis.com/youtube/v3/channels?part=statistics&forUsername="+name+"&key="+key, headers = {'User-agent': 'Toersten'})
+    t_subs = int(t_data.json()["items"][0]["statistics"]["subscriberCount"])
+    if pew_subs < t_subs:
+        await ctx.channel.send("Tseries is currently {} subscribers ahead of Pewdiepie".format(str(t_subs - pew_subs)))
     else:
-        await ctx.channel.send("Pewdiepie is currently {} subscribers ahead of T-series".format(str(pewdiepieSubcount - tseriesSubcount)))
+        await ctx.channel.send("Pewdiepie is currently {} subscribers ahead of T-series".format(str(pew_subs - t_subs)))
 @bot.event 
 async def sendProgrammerHumorTopMeme(ctx):
         data = requests.get("https://www.reddit.com/r/ProgrammerHumor.json?limit=1", headers = {'User-agent': 'Toersten'})
